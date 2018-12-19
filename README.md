@@ -34,7 +34,7 @@ gpg --list-keys
 /Users/user/.gnupg/pubring.kbx
 -------------------------------------
 pub   rsa4096 2018-12-18 [SC] [expires: 2019-12-18]
-      **[Public Key]**
+      [Public Key]
 uid           [ultimate] ....
 sub   rsa4096 2018-12-18 [E] [expires: 2019-12-18]
 ```
@@ -58,8 +58,25 @@ gpg --armor --export [keyword] > [filename].asc
 ```
 
 
-## Put the key into your Git account
+## Put the key into your Git account and Git config
 Follow those steps to put your GPG key into your Git account
 
 1. Navigate to Github → Settings → SSH-Keys & GPG Keys - Github SSH & GPG Key Settings
 2. Click on 'New GPG Key'
+3. Paste the public key into the box. The public key is all the text is printed out when we use gpg export command.
+
+We also need to set the GPG want to use for the git command. Use the command:
+```
+git config --global user.signingkey ${gpgkey}
+```
+
+## Sign the commit with git command
+
+You could use following command to sign the commit individually
+```
+git commit -S -m "[Message log]"
+```
+Alternately, we could force the GPG sign globally for every commit
+```
+git config --global commit.gpgsign true
+```
