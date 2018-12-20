@@ -1,8 +1,5 @@
 package com.khanh.sample.models;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-
-@JsonRootName(value = "trade")
 public class Trade {
     private long tradeId;
     private double price;
