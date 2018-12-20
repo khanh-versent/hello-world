@@ -6,6 +6,10 @@ public class Trade {
     private double volume;
     private String description;
 
+    public Trade() {
+
+    }
+
     public Trade(long tradeId, double price, double volume, String description) {
         this.tradeId = tradeId;
         this.price = price;
