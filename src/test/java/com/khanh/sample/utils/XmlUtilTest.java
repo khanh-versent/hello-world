@@ -1,6 +1,7 @@
 package com.khanh.sample.utils;
 
-import com.khanh.sample.models.Customer;
+import com.khanh.sample.models.Trade;
+import com.khanh.sample.models.TradeDetails;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 
 public class XmlUtilTest {
-    private String fileName = "Customer.xml";
+    private String fileName = "Trades.xml";
 
     @Test
     public void testXmlUtilWriteToFile() throws IOException {
@@ -20,7 +21,11 @@ public class XmlUtilTest {
             f.delete();
         }
 
-        //XmlUtil.WriteToFile(fileName, details);
+        List<Trade> trades =  new ArrayList();
+        trades.add(new Trade(1, 100, 100, "Trade 1"));
+        trades.add(new Trade(2, 100, 100, "Trade 2"));
+        TradeDetails details = new TradeDetails(trades);
+        XmlUtil.WriteToFile(fileName, details);
 
         f = new File(fileName);
         Assert.assertNotNull(f);
