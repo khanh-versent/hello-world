@@ -42,7 +42,7 @@ To export the key, use the command
 ```
 gpg --armor --export [keyword]
 ```
-[keyword] could be the public key or a part of full name when you generate the new key.
+[keyword] could be the public key or a part of full description when you generate the new key.
 The key will be print out in the Terminal console
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----

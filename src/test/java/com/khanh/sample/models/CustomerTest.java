@@ -1,5 +1,4 @@
-package com.khanh.sample;
-
+package com.khanh.sample.models;
 
 import org.junit.Assert;
 import org.junit.Test;

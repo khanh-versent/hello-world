@@ -1,5 +1,8 @@
-package com.khanh.sample;
+package com.khanh.sample.models;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
+@JacksonXmlRootElement(localName = "customer")
 public class Customer {
     private String name;
     private int age;
