@@ -1,12 +1,5 @@
 package com.khanh.sample;
 
-import com.khanh.sample.models.Trade;
-import com.khanh.sample.models.TradeDetails;
-import com.khanh.sample.models.TradeMetadata;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class BRS {
     private String csvPath;
     private String nuggetPath;

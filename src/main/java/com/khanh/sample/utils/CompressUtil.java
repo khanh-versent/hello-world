@@ -7,9 +7,9 @@ import org.apache.commons.compress.utils.IOUtils;
 import java.io.*;
 import java.util.zip.GZIPOutputStream;
 
-public class CompressUtil {
+class CompressUtil {
 
-    public static void createTarFile(String fileName, String[] compressingFileNames) {
+    static void createTarFile(String fileName, String[] compressingFileNames) {
 
         TarArchiveOutputStream tarOs = null;
         try {

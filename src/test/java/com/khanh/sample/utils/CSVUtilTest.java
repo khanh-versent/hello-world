@@ -17,17 +17,16 @@ public class CSVUtilTest {
     @Test
     public void testCSVUtilWriteToFile() throws IOException {
         File f = new File(fileName);
-        if(f.exists()) {
-            f.delete();
+        if (f.exists()) {
+            Assert.assertTrue(f.delete());
         }
 
-        List<Trade> trades =  GetTrades();
-
+        List<Trade> trades = GetTrades();
         CSVUtil.WriteToFile(fileName, Trade.class, trades);
 
         f = new File(fileName);
         Assert.assertNotNull(f);
-        Assert.assertEquals(true, f.exists());
+        Assert.assertTrue(f.exists());
     }
 
     @Test
@@ -41,9 +40,9 @@ public class CSVUtilTest {
         Assert.assertEquals(trades.size(), originalTrades.size());
 
         int matchCount = 0;
-        for(Trade trade : trades) {
-            for(Trade originalTrade : originalTrades) {
-                if(trade.getTradeId() == originalTrade.getTradeId()) {
+        for (Trade trade : trades) {
+            for (Trade originalTrade : originalTrades) {
+                if (trade.getTradeId() == originalTrade.getTradeId()) {
                     matchCount++;
                     Assert.assertEquals(trade.getPrice(), originalTrade.getPrice(), DELTA);
                     Assert.assertEquals(trade.getVolume(), originalTrade.getVolume(), DELTA);
@@ -55,8 +54,8 @@ public class CSVUtilTest {
         Assert.assertEquals(matchCount, trades.size());
     }
 
-    private List GetTrades() {
-        List<Trade> trades =  new ArrayList();
+    private List<Trade> GetTrades() {
+        List<Trade> trades = new ArrayList<Trade>();
         trades.add(new Trade(1, 100, 100, "Trade 1"));
         trades.add(new Trade(2, 100, 100, "Trade 2"));
         return trades;

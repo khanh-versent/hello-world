@@ -1,7 +1,5 @@
 package com.khanh.sample;
 
-import java.util.Date;
-
 public class Validation {
     private String f365CsvPath;
     private String nuggetPath;

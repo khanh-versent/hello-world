@@ -20,7 +20,7 @@ public class CompressUtilTest {
         CompressUtil.createTarFile(compressFile, fileNames);
 
         File file = new File(compressFile);
-        Assert.assertEquals(true, file.exists());
+        Assert.assertTrue(file.exists());
     }
 
     private void createFile(String fileName, String content) throws IOException {
@@ -29,6 +29,6 @@ public class CompressUtilTest {
         writer.close();
 
         File file = new File(fileName);
-        Assert.assertEquals(true, file.exists());
+        Assert.assertTrue(file.exists());
     }
 }
