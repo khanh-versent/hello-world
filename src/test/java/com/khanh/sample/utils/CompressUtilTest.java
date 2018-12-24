@@ -6,21 +6,49 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class CompressUtilTest {
+    String[] fileNames = {"textfile1.txt", "textfile2.txt"};
+    String[] fileContents = {"textfile1", "textfile2"};
+    String compressFile = "compress.tar.gz";
+
     @Test
     public void testCompressUtilCreateTarFile() throws IOException {
-        String[] fileNames = {"textfile1.txt", "textfile2.txt"};
 
-        createFile(fileNames[0], "textfile1");
-        createFile(fileNames[1], "textfile2");
+        for(int i = 0; i < 2; i++) {
+            createFile(fileNames[i], fileContents[i]);
+        }
 
-        String compressFile = "compress.tar.gz";
         CompressUtil.createTarFile(compressFile, fileNames);
 
         File file = new File(compressFile);
         Assert.assertTrue(file.exists());
+    }
+
+    @Test
+    public void testCompressUtilExtractTarFile() throws IOException {
+
+        for (String fileName : fileNames) {
+            File file = new File(fileName);
+            if(file.exists()) {
+                Assert.assertTrue(file.delete());
+            }
+        }
+
+        testCompressUtilCreateTarFile();
+
+        CompressUtil.extractTarFile(compressFile, "compress");
+
+        for(int i = 0; i < 2; i++) {
+            String path = "compress" + File.separator + fileNames[i];
+            Assert.assertTrue(new File(path).exists());
+
+            String content = Files.readString(Paths.get(path)).trim();
+            Assert.assertEquals(fileContents[i], content);
+        }
     }
 
     private void createFile(String fileName, String content) throws IOException {

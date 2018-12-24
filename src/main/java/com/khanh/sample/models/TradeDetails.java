@@ -10,7 +10,8 @@ public class TradeDetails {
     @JacksonXmlProperty(localName = "trade")
     private List<Trade> trades;
 
-    public TradeDetails() {}
+    public TradeDetails() {
+    }
 
     public TradeDetails(List<Trade> trades) {
         this.trades = trades;

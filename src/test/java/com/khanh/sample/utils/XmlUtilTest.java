@@ -22,10 +22,7 @@ public class XmlUtilTest {
             Assert.assertTrue(f.delete());
         }
 
-        List<Trade> trades =  new ArrayList<Trade>();
-        trades.add(new Trade(1, 100, 100, "Trade 1"));
-        trades.add(new Trade(2, 100, 100, "Trade 2"));
-        TradeDetails details = new TradeDetails(trades);
+        TradeDetails details = getTradeDetails();
         XmlUtil.WriteToFile(fileName, details);
 
         f = new File(fileName);
