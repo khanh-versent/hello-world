@@ -36,7 +36,7 @@ class CompressUtil {
 
     private static void addFilesToTarGZ(TarArchiveOutputStream tos, File file, String dir) throws IOException {
         // New TarArchiveEntry
-        tos.putArchiveEntry(new TarArchiveEntry(file, dir + File.separator + file.getName()));
+        tos.putArchiveEntry(new TarArchiveEntry(file, dir + File.separator + file.toString()));
         if (file.isFile()) {
             FileInputStream fis = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(fis);

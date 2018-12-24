@@ -11,14 +11,15 @@ import java.nio.file.Paths;
 
 
 public class CompressUtilTest {
-    String[] fileNames = {"textfile1.txt", "textfile2.txt"};
-    String[] fileContents = {"textfile1", "textfile2"};
+    int fileCount = 3;
+    String[] fileNames = {"textfile1.txt", "textfile2.txt", "sub/textfile3.txt"};
+    String[] fileContents = {"textfile1", "textfile2", "textfile3"};
     String compressFile = "compress.tar.gz";
 
     @Test
     public void testCompressUtilCreateTarFile() throws IOException {
 
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < fileCount; i++) {
             createFile(fileNames[i], fileContents[i]);
         }
 
@@ -42,7 +43,7 @@ public class CompressUtilTest {
 
         CompressUtil.extractTarFile(compressFile, "compress");
 
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < fileCount; i++) {
             String path = "compress" + File.separator + fileNames[i];
             Assert.assertTrue(new File(path).exists());
 
@@ -52,11 +53,17 @@ public class CompressUtilTest {
     }
 
     private void createFile(String fileName, String content) throws IOException {
+        File file = new File(fileName);
+        File parentFile = file.getParentFile();
+        if(parentFile != null && !parentFile.exists()) {
+            Assert.assertTrue(parentFile.mkdirs());
+        }
+
         PrintWriter writer = new PrintWriter(fileName, "UTF-8");
         writer.println(content);
         writer.close();
 
-        File file = new File(fileName);
+        file = new File(fileName);
         Assert.assertTrue(file.exists());
     }
 }
