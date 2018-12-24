@@ -12,10 +12,10 @@ import java.util.List;
 
 
 public class XmlUtilTest {
+    String fileName = "Trades.xml";
 
     @Test
     public void testXmlUtilWriteToFile() throws IOException {
-        String fileName = "Trades.xml";
 
         File f = new File(fileName);
         if(f.exists()) {
@@ -31,5 +31,24 @@ public class XmlUtilTest {
         f = new File(fileName);
         Assert.assertNotNull(f);
         Assert.assertTrue(f.exists());
+    }
+
+    @Test
+    public void testXmlUtilReadFromFile() throws IOException {
+        testXmlUtilWriteToFile();
+
+        TradeDetails details = XmlUtil.ReadFromFile(fileName, TradeDetails.class);
+        Assert.assertNotNull(details);
+
+        List<Trade> trades = details.getTrades();
+        List<Trade> originalTrades = getTradeDetails().getTrades();
+        Assert.assertEquals(trades.size(), originalTrades.size());
+    }
+
+    private TradeDetails getTradeDetails() {
+        List<Trade> trades =  new ArrayList<Trade>();
+        trades.add(new Trade(1, 100, 100, "Trade 1"));
+        trades.add(new Trade(2, 100, 100, "Trade 2"));
+        return new TradeDetails(trades);
     }
 }
