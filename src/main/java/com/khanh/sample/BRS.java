@@ -26,7 +26,7 @@ public class BRS {
         this.csvPath = csvPath;
         this.nuggetPath = nuggetPath;
 
-        trades = new HashMap<>();
+        setTrades(new HashMap<>());
         lastCheckCsv = new Date();
     }
 
@@ -36,7 +36,7 @@ public class BRS {
     }
 
     public void createNuggetFiles() {
-        for(String fileName : this.trades.keySet()) {
+        for(String fileName : this.getTrades().keySet()) {
             try {
                 createNuggetFile(fileName);
             } catch (IOException e) {
@@ -52,7 +52,7 @@ public class BRS {
         for(File file : files) {
             try {
                 List<Trade> newTrades = CSVUtil.readFromFile(file, Trade.class);
-                this.trades.put(file.getName(), newTrades);
+                this.getTrades().put(file.getName(), newTrades);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -62,18 +62,18 @@ public class BRS {
     public void createNuggetFile(String fileName) throws IOException {
         String time = getCurrentTimeString();
 
-        TradeDetails details = new TradeDetails(this.trades.get(fileName));
+        TradeDetails details = new TradeDetails(this.getTrades().get(fileName));
         String detailsFilePath = this.nuggetPath + File.separator + time + "-details.xml";
         XmlUtil.writeToFile(detailsFilePath, details);
 
-        TradeMetadata metadata = new TradeMetadata(this.trades.get(fileName));
+        TradeMetadata metadata = new TradeMetadata(this.getTrades().get(fileName));
         String metadataFilePath = this.nuggetPath + File.separator + time + "-metadata.xml";
         XmlUtil.writeToFile(metadataFilePath, metadata);
 
         String tarGzFilePath = this.nuggetPath + File.separator + time + ".tar.gz";
         CompressUtil.createTarFile(tarGzFilePath, new String[] { detailsFilePath, metadataFilePath });
 
-        this.trades.remove(fileName);
+        this.getTrades().remove(fileName);
     }
 
     private String getCurrentTimeString() {
@@ -89,5 +89,13 @@ public class BRS {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public Map<String, List<Trade>> getTrades() {
+        return trades;
+    }
+
+    public void setTrades(Map<String, List<Trade>> trades) {
+        this.trades = trades;
     }
 }

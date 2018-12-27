@@ -15,7 +15,7 @@ public class SIMTest {
     String csvPath = "csv365";
 
     @Test
-    public void execute() {
+    public void testExecute() {
 
         Assert.assertTrue(FileUtil.deleteDirectory(csvPath));
         SIM sim = new SIM(csvPath);
@@ -30,7 +30,7 @@ public class SIMTest {
     }
 
     @Test
-    public void createF365CSVFile() {
+    public void testCreateF365CSVFile() {
 
         Assert.assertTrue(FileUtil.deleteDirectory(csvPath));
         SIM sim = new SIM(csvPath);

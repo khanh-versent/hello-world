@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 public class FileUtilTest {
@@ -19,21 +20,27 @@ public class FileUtilTest {
     String[] fileContents = {"textfile1", "textfile2", "textfile3"};
 
     @Test
-    public void getNewFiles() throws Exception {
+    public void testGetNewFiles() throws Exception {
+        Date lastCheck = new Date();
+        createTestFiles();
+
         File[] allFiles = FileUtil.getFiles("sub", LastModifiedFileComparator.LASTMODIFIED_REVERSE);
         int amount = allFiles.length;
+        Assert.assertEquals(amount, fileNames.length);
+        List<File> newFiles = FileUtil.getNewFiles("sub", lastCheck.getTime());
+        Assert.assertEquals(amount, newFiles.size());
 
         // assuming the textfile1 is the file that read by last check
         // so this check, we will see textfile2 and textfile3 in this check
-        long lastCheck = allFiles[amount - 1].lastModified();
-        List<File> newFiles = FileUtil.getNewFiles("sub", lastCheck);
+        long lastCheck2 = allFiles[amount - 1].lastModified();
+        newFiles = FileUtil.getNewFiles("sub", lastCheck2);
         Assert.assertEquals(amount - 1, newFiles.size());
         Assert.assertEquals("textfile3.txt", newFiles.get(0).getName());
         Assert.assertEquals("textfile2.txt", newFiles.get(1).getName());
     }
 
     @Test
-    public void getFiles() throws Exception {
+    public void testGetFiles() throws Exception {
         createTestFiles();
 
         File[] files = FileUtil.getFiles("sub", LastModifiedFileComparator.LASTMODIFIED_REVERSE);
