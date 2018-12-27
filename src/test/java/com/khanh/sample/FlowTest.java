@@ -1,8 +1,11 @@
 package com.khanh.sample;
 
+import com.khanh.sample.models.Trade;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlowTest {
     private static final String F365_CSV_PATH = "data" + File.separator + "FOLDER1";
@@ -19,20 +22,23 @@ public class FlowTest {
         DMP dmp = new DMP(NUGGET_PATH, FORWARDED_NUGGET_PATH, ARCHIVED_PATH, F46_CSV_PATH);
         BNP bnp = new BNP(FORWARDED_NUGGET_PATH, F46_CSV_PATH);
 
-        sim.Execute();
+        List<Trade> trades = new ArrayList<>();
+
+        sim.setTrades(trades);
+        sim.execute();
         validation.verifyF365CSVFile();
 
-        brs.Execute();
+        brs.execute();
         validation.verifyNuggetFile(NUGGET_PATH);
 
-        dmp.ExecuteNugget();
+        dmp.executeNugget();
         validation.verifyNuggetFile(FORWARDED_NUGGET_PATH);
         validation.verifyNuggetFile(ARCHIVED_PATH);
 
         bnp.Execute();
         validation.verifyF46CSVFile(F46_CSV_PATH);
 
-        dmp.ExecuteF46CSV();
+        dmp.executeF46CSV();
         validation.verifyF46CSVFile(ARCHIVED_PATH);
     }
 }

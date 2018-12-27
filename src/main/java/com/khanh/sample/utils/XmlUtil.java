@@ -8,25 +8,25 @@ import java.io.*;
 
 public class XmlUtil {
 
-    public static void WriteToWriter(Writer writer, Object data) throws IOException {
+    public static void writeToWriter(Writer writer, Object data) throws IOException {
         XmlMapper mapper = new XmlMapper();
         mapper.setDefaultUseWrapper(false);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(writer, data);
     }
 
-    public static void WriteToFile(String fileName, Object data) throws IOException {
+    public static void writeToFile(String fileName, Object data) throws IOException {
         FileWriter writer = new FileWriter(fileName);
-        WriteToWriter(writer, data);
+        writeToWriter(writer, data);
     }
 
-    public static <T> T ReadFromReader(Reader reader, Class<T> objectClass) throws IOException {
+    public static <T> T readFromReader(Reader reader, Class<T> objectClass) throws IOException {
         ObjectMapper objectMapper = new XmlMapper();
         return objectMapper.readValue(reader, objectClass);
     }
 
-    public static <T> T ReadFromFile(String fileName, Class<T> objectClass) throws IOException {
+    public static <T> T readFromFile(String fileName, Class<T> objectClass) throws IOException {
         FileReader reader = new FileReader(fileName);
-        return ReadFromReader(reader, objectClass);
+        return readFromReader(reader, objectClass);
     }
 }

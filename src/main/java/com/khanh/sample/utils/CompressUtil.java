@@ -9,9 +9,9 @@ import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-class CompressUtil {
+public class CompressUtil {
 
-    static void createTarFile(String fileName, String[] compressingFileNames) {
+    public static void createTarFile(String fileName, String[] compressingFileNames) {
 
         TarArchiveOutputStream tarOs = null;
         try {
@@ -58,7 +58,7 @@ class CompressUtil {
         }
     }
 
-    static void extractTarFile(String fileName, String destination) throws IOException {
+    public static void extractTarFile(String fileName, String destination) throws IOException {
         File tarGzFile = new File(fileName);
         String tarFilePath = getTarFileName(tarGzFile);
         File tarFile = new File(tarFilePath);

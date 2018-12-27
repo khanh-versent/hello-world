@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -59,7 +60,7 @@ public class CompressUtilTest {
             Assert.assertTrue(parentFile.mkdirs());
         }
 
-        PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+        PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8);
         writer.println(content);
         writer.close();
 

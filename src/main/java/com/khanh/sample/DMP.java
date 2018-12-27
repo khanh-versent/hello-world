@@ -1,6 +1,7 @@
 package com.khanh.sample;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class DMP {
@@ -12,46 +13,67 @@ public class DMP {
     List<String> newNuggets;
     List<String> newCSVs;
 
-    public DMP(String nuggetPath, String forwardedNuggetPath, String archivedNuggetPath, String csvPath) {
+    Date lastNuggetCheck;
+    Date lastCSVCheck;
+
+    public DMP(String nuggetPath, String forwardedNuggetPath,
+               String archivedNuggetPath, String csvPath) {
         this.nuggetPath = nuggetPath;
         this.forwardedNuggetPath = forwardedNuggetPath;
         this.archivedNuggetPath = archivedNuggetPath;
         this.csvPath = csvPath;
     }
 
-    public void ExecuteNugget() {
+    public void executeNugget() {
         checkNewNuggetFile();
 
-        // TODO process those files
+        try {
+            for (String nugget : newNuggets) {
+                // TODO process those files
 
-        forwardNuggetFile(newNuggets);
-        archivedNuggetFile(newNuggets);
+                if (!forwardNuggetFile(nugget)) {
+                    throw new Exception(nugget);
+                }
+                if(!archivedNuggetFile(nugget)) {
+                    throw new Exception(nugget);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    public void ExecuteF46CSV() {
+    public void executeF46CSV() {
         checkNewF46CSVFile();
-        archivedF46CSVFile(newCSVs);
+
+        for(String csv : newCSVs) {
+            // TODO process those files
+
+            archivedF46CSVFile(csv);
+        }
     }
 
     public void checkNewNuggetFile() {
 
+
+        lastNuggetCheck = new Date();
     }
 
-    private boolean forwardNuggetFile(List<String> filePaths) {
+    private boolean forwardNuggetFile(String filePath) {
         return true;
     }
 
-    private boolean archivedNuggetFile(List<String> filePaths) {
+    private boolean archivedNuggetFile(String filePath) {
         return true;
     }
-
 
 
     public void checkNewF46CSVFile() {
-        newCSVs = new ArrayList<String>();
+
+        lastCSVCheck = new Date();
     }
 
-    public boolean archivedF46CSVFile(List<String> filePaths) {
+    public boolean archivedF46CSVFile(String filePath) {
         return true;
     }
 }

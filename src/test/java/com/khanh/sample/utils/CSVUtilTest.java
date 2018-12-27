@@ -22,7 +22,7 @@ public class CSVUtilTest {
         }
 
         List<Trade> trades = GetTrades();
-        CSVUtil.WriteToFile(fileName, Trade.class, trades);
+        CSVUtil.writeToFile(fileName, Trade.class, trades);
 
         f = new File(fileName);
         Assert.assertNotNull(f);
@@ -33,7 +33,7 @@ public class CSVUtilTest {
     public void testCSVUtilReadFromFile() throws IOException {
         testCSVUtilWriteToFile();
 
-        List<Trade> trades = CSVUtil.ReadFromFile(fileName, Trade.class);
+        List<Trade> trades = CSVUtil.readFromFile(fileName, Trade.class);
         List<Trade> originalTrades = GetTrades();
 
         Assert.assertNotNull(trades);

@@ -23,7 +23,7 @@ public class XmlUtilTest {
         }
 
         TradeDetails details = getTradeDetails();
-        XmlUtil.WriteToFile(fileName, details);
+        XmlUtil.writeToFile(fileName, details);
 
         f = new File(fileName);
         Assert.assertNotNull(f);
@@ -34,7 +34,7 @@ public class XmlUtilTest {
     public void testXmlUtilReadFromFile() throws IOException {
         testXmlUtilWriteToFile();
 
-        TradeDetails details = XmlUtil.ReadFromFile(fileName, TradeDetails.class);
+        TradeDetails details = XmlUtil.readFromFile(fileName, TradeDetails.class);
         Assert.assertNotNull(details);
 
         List<Trade> trades = details.getTrades();
