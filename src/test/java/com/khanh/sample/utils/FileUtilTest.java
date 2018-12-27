@@ -12,7 +12,10 @@ import java.util.List;
 
 public class FileUtilTest {
 
-    String[] fileNames = {"sub" + File.separator + "textfile1.txt", "sub" + File.separator + "textfile2.txt", "sub" + File.separator + "textfile3.txt"};
+    String[] fileNames = {
+            "sub" + File.separator + "textfile1.txt",
+            "sub" + File.separator + "textfile2.txt",
+            "sub" + File.separator + "textfile3.txt"};
     String[] fileContents = {"textfile1", "textfile2", "textfile3"};
 
     @Test

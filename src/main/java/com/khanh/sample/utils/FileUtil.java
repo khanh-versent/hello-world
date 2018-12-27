@@ -43,16 +43,17 @@ public class FileUtil {
         }
     }
 
-    public static void deleteDirectory(String path) {
-        File f = new File(path);
-        if (null != f && f.exists()) {
-            File[] files = f.listFiles();
+    public static boolean deleteDirectory(String path) {
+        File directory = new File(path);
+        if (directory.exists()) {
+            File[] files = directory.listFiles();
             if(files != null) {
                 for (File file : files) {
                     file.delete();
                 }
             }
-            f.delete();
+            return directory.delete();
         }
+        return true;
     }
 }

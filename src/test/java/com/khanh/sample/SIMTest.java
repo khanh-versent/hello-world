@@ -16,12 +16,23 @@ public class SIMTest {
 
     @Test
     public void execute() {
+
+        Assert.assertTrue(FileUtil.deleteDirectory(csvPath));
+        SIM sim = new SIM(csvPath);
+
+        List<Trade> originalTrades = GetTrades();
+        sim.setTrades(originalTrades);
+        sim.execute();
+
+        File[] files = new File(csvPath).listFiles();
+        Assert.assertNotNull(files);
+        Assert.assertEquals(1, files.length);
     }
 
     @Test
     public void createF365CSVFile() {
 
-        FileUtil.deleteDirectory(csvPath);
+        Assert.assertTrue(FileUtil.deleteDirectory(csvPath));
         SIM sim = new SIM(csvPath);
 
         List<Trade> originalTrades = GetTrades();
