@@ -54,17 +54,13 @@ public class CompressUtilTest {
     }
 
     private void createFile(String fileName, String content) throws IOException {
-        File file = new File(fileName);
-        File parentFile = file.getParentFile();
-        if(parentFile != null && !parentFile.exists()) {
-            Assert.assertTrue(parentFile.mkdirs());
-        }
+        FileUtil.checkAndCreateDirectory(fileName);
 
         PrintWriter writer = new PrintWriter(fileName, StandardCharsets.UTF_8);
         writer.println(content);
         writer.close();
 
-        file = new File(fileName);
+        File file = new File(fileName);
         Assert.assertTrue(file.exists());
     }
 }

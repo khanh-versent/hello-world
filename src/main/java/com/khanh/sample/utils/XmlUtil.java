@@ -16,6 +16,8 @@ public class XmlUtil {
     }
 
     public static void writeToFile(String fileName, Object data) throws IOException {
+        FileUtil.checkAndCreateDirectory(fileName);
+
         FileWriter writer = new FileWriter(fileName);
         writeToWriter(writer, data);
     }

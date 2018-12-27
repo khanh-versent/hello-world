@@ -9,7 +9,7 @@ import java.util.List;
 public class CSVUtil {
 
     public static void writeToFile(String fileName, Class objectClass, List data) throws IOException {
-        checkDirectory(fileName);
+        FileUtil.checkAndCreateDirectory(fileName);
 
         FileWriter fileWriter = new FileWriter(fileName);
         writeToWriter(fileWriter, objectClass, data);
@@ -23,11 +23,16 @@ public class CSVUtil {
     }
 
     public static <T> List<T> readFromFile(String fileName, Class objectClass) throws IOException {
-        FileReader fileReader = new FileReader(fileName);
+        File file = new File(fileName);
+        return readFromFile(file, objectClass);
+    }
+
+    public static <T> List<T> readFromFile(File file, Class objectClass) throws IOException {
+        FileReader fileReader = new FileReader(file);
         return readFromReader(fileReader, objectClass);
     }
 
-    public static <T> List<T> readFromReader(Reader reader, Class objectClass) throws  IOException {
+    public static <T> List<T> readFromReader(Reader reader, Class objectClass) throws IOException {
         CsvMapper csvMapper = new CsvMapper();
         CsvSchema csvSchema = csvMapper.typedSchemaFor(objectClass).withHeader();
 
@@ -37,13 +42,5 @@ public class CSVUtil {
         return result;
     }
 
-    private static void checkDirectory(String fileName) {
-        final File file = new File(fileName);
-        final File parent_directory = file.getParentFile();
 
-        if (null != parent_directory)
-        {
-            parent_directory.mkdirs();
-        }
-    }
 }

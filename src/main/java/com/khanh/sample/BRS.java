@@ -6,6 +6,7 @@ import com.khanh.sample.models.TradeMetadata;
 import com.khanh.sample.utils.CSVUtil;
 import com.khanh.sample.utils.CompressUtil;
 import com.khanh.sample.utils.XmlUtil;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +20,14 @@ public class BRS {
     private String nuggetPath;
 
     private Map<String, List<Trade>>  trades;
+    private Date lastCheckCsv;
 
     public BRS(String csvPath, String nuggetPath) {
         this.csvPath = csvPath;
         this.nuggetPath = nuggetPath;
 
         trades = new HashMap<>();
+        lastCheckCsv = new Date();
     }
 
     public void execute() {
@@ -40,19 +43,18 @@ public class BRS {
     }
 
     public void checkNewF365CSVFile() {
-        // TODO read the folder and check if there's new files
-        List<String> fileNames = new ArrayList<>();
+        File[] files = checkNewFiles();
+        this.lastCheckCsv = new Date();
 
-        for(String fileName : fileNames) {
+        for(File file : files) {
             List<Trade> newTrades = null;
 
             try {
-                newTrades = CSVUtil.readFromFile(fileName, Trade.class);
-                this.trades.put(fileName, newTrades);
-            } catch (IOException e) {
+                newTrades = CSVUtil.readFromFile(file, Trade.class);
+                this.trades.put(file.getName(), newTrades);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -77,5 +79,13 @@ public class BRS {
         DateFormat df = new SimpleDateFormat(datePattern);
         Date today = Calendar.getInstance().getTime();
         return df.format(today);
+    }
+
+    private File[] checkNewFiles() {
+        File dir = new File(this.csvPath);
+        File[] files = dir.listFiles();
+        Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+
+        return files;
     }
 }
