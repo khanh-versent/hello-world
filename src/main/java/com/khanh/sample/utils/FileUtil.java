@@ -3,16 +3,17 @@ package com.khanh.sample.utils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class FileUtil {
 
-    public static List<File> getNewFiles(String directoryPath, Date lastCheck) throws Exception {
+    public static List<File> getNewFiles(String directoryPath, long lastCheck) throws IOException {
         List<File> newFiles = new ArrayList<>();
 
         File[] files = getFiles(directoryPath, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
         for (File file : files) {
-            if (file.lastModified() > lastCheck.getTime()) {
+            if (file.lastModified() > lastCheck) {
                 newFiles.add(file);
             } else {
                 break;
@@ -22,10 +23,10 @@ public class FileUtil {
         return newFiles;
     }
 
-    public static File[] getFiles(String directoryPath, Comparator<File> comparator) throws Exception {
+    public static File[] getFiles(String directoryPath, Comparator<File> comparator) throws IOException {
         File directory = new File(directoryPath);
         if (directory.isFile())
-            throw new Exception("This path is not a directory.");
+            throw new IOException("This path is not a directory.");
 
         File[] files = directory.listFiles();
         Arrays.sort(files, comparator);
@@ -39,6 +40,19 @@ public class FileUtil {
 
         if (null != parentDirectory && !parentDirectory.exists()) {
             parentDirectory.mkdirs();
+        }
+    }
+
+    public static void deleteDirectory(String path) {
+        File f = new File(path);
+        if (null != f && f.exists()) {
+            File[] files = f.listFiles();
+            if(files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+            f.delete();
         }
     }
 }

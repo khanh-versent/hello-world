@@ -21,16 +21,17 @@ public class SIM {
     }
 
     public void execute() {
+        createF365CSVFile(this.trades);
+    }
+
+    public void createF365CSVFile(List<Trade> data) {
+        String fileName = this.csvPath + File.separator + getCurrentTimeString() + ".csv";
+
         try {
-            createF365CSVFile(this.trades);
+            CSVUtil.writeToFile(fileName, Trade.class, data);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public void createF365CSVFile(List<Trade> data) throws IOException {
-        String fileName = this.csvPath + File.separator + getCurrentTimeString() + ".csv";
-        CSVUtil.writeToFile(fileName, Trade.class, data);
     }
 
     private String getCurrentTimeString() {

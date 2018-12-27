@@ -5,8 +5,8 @@ import com.khanh.sample.models.TradeDetails;
 import com.khanh.sample.models.TradeMetadata;
 import com.khanh.sample.utils.CSVUtil;
 import com.khanh.sample.utils.CompressUtil;
+import com.khanh.sample.utils.FileUtil;
 import com.khanh.sample.utils.XmlUtil;
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class BRS {
     private String csvPath;
     private String nuggetPath;
 
-    private Map<String, List<Trade>>  trades;
+    private Map<String, List<Trade>> trades;
     private Date lastCheckCsv;
 
     public BRS(String csvPath, String nuggetPath) {
@@ -31,8 +31,11 @@ public class BRS {
     }
 
     public void execute() {
-        checkNewF365CSVFile();
+        processNewF365CSVFile();
+        createNuggetFiles();
+    }
 
+    public void createNuggetFiles() {
         for(String fileName : this.trades.keySet()) {
             try {
                 createNuggetFile(fileName);
@@ -42,15 +45,13 @@ public class BRS {
         }
     }
 
-    public void checkNewF365CSVFile() {
-        File[] files = checkNewFiles();
+    public void processNewF365CSVFile() {
+        List<File> files = getNewFilesList();
         this.lastCheckCsv = new Date();
 
         for(File file : files) {
-            List<Trade> newTrades = null;
-
             try {
-                newTrades = CSVUtil.readFromFile(file, Trade.class);
+                List<Trade> newTrades = CSVUtil.readFromFile(file, Trade.class);
                 this.trades.put(file.getName(), newTrades);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -81,11 +82,12 @@ public class BRS {
         return df.format(today);
     }
 
-    private File[] checkNewFiles() {
-        File dir = new File(this.csvPath);
-        File[] files = dir.listFiles();
-        Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-
-        return files;
+    private List<File> getNewFilesList() {
+        try {
+            return FileUtil.getNewFiles(this.csvPath, lastCheckCsv.getTime());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

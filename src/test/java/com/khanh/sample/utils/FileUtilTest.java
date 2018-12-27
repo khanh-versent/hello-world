@@ -8,34 +8,30 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.Assert.*;
+import java.util.List;
 
 public class FileUtilTest {
 
+    String[] fileNames = {"sub" + File.separator + "textfile1.txt", "sub" + File.separator + "textfile2.txt", "sub" + File.separator + "textfile3.txt"};
+    String[] fileContents = {"textfile1", "textfile2", "textfile3"};
+
     @Test
-    public void getNewFiles() {
+    public void getNewFiles() throws Exception {
+        File[] allFiles = FileUtil.getFiles("sub", LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+        int amount = allFiles.length;
+
+        // assuming the textfile1 is the file that read by last check
+        // so this check, we will see textfile2 and textfile3 in this check
+        long lastCheck = allFiles[amount - 1].lastModified();
+        List<File> newFiles = FileUtil.getNewFiles("sub", lastCheck);
+        Assert.assertEquals(amount - 1, newFiles.size());
+        Assert.assertEquals("textfile3.txt", newFiles.get(0).getName());
+        Assert.assertEquals("textfile2.txt", newFiles.get(1).getName());
     }
 
     @Test
     public void getFiles() throws Exception {
-        File f = new File("sub");
-        if (null != f && f.exists()) {
-            File[] files = f.listFiles();
-            for (File file : files) {
-                Assert.assertTrue(file.delete());
-            }
-
-            Assert.assertTrue(f.delete());
-        }
-
-        String[] fileNames = {"sub" + File.separator + "textfile1.txt", "sub" + File.separator + "textfile2.txt", "sub" + File.separator + "textfile3.txt"};
-        String[] fileContents = {"textfile1", "textfile2", "textfile3"};
-
-        for (int i = 0; i < fileNames.length; i++) {
-            createFile(fileNames[i], fileContents[i]);
-            Thread.sleep(100);
-        }
+        createTestFiles();
 
         File[] files = FileUtil.getFiles("sub", LastModifiedFileComparator.LASTMODIFIED_REVERSE);
         Assert.assertEquals(fileNames.length, files.length);
@@ -49,6 +45,15 @@ public class FileUtilTest {
 
         for (int i = 0; i < fileNames.length - 1; i++) {
             Assert.assertTrue(files[i].lastModified() <= files[i + 1].lastModified());
+        }
+    }
+
+    private void createTestFiles() throws Exception {
+        FileUtil.deleteDirectory("sub");
+
+        for (int i = 0; i < fileNames.length; i++) {
+            createFile(fileNames[i], fileContents[i]);
+            Thread.sleep(100);
         }
     }
 
