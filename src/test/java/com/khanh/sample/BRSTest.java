@@ -49,39 +49,25 @@ public class BRSTest {
 
         for (Map.Entry<String, List<Trade>> entry : createdTrades.entrySet()) {
             Assert.assertTrue(processedTrades.containsKey(entry.getKey()));
-
-            List<Trade> trades = processedTrades.get(entry.getKey());
-            for (Trade trade : trades) {
-                Trade foundTrade = findById(entry.getValue(), trade.getTradeId());
-                Assert.assertNotNull(foundTrade);
-                Assert.assertEquals(foundTrade.getVolume(), trade.getVolume(), DELTA);
-                Assert.assertEquals(foundTrade.getPrice(), trade.getPrice(), DELTA);
-                Assert.assertEquals(foundTrade.getDescription(), trade.getDescription());
-            }
+            TestUtil.assertEqualsTrades(processedTrades.get(entry.getKey()), entry.getValue());
         }
     }
 
     @Test
     public void testCreateNuggetFile() throws IOException {
-        int amountOfSet = 5;
         FileUtil.deleteDirectory("sim");
         FileUtil.deleteDirectory("brs");
 
         BRS brs = new BRS("sim", "brs");
-        createCSVFiles(amountOfSet);
-        brs.processNewF365CSVFile();
 
-        Map<String, List<Trade>> processedTrades = brs.getTrades();
-        Assert.assertEquals(amountOfSet, processedTrades.size());
+        List<Trade> trades = getTrades();
 
-        brs.createNuggetFile();
+        brs.createNuggetFile(trades);
         FileFilter filter = new RegexFileFilter(".*\\.tar\\.gz");
         File[] files = new File("brs").listFiles(filter);
         Assert.assertNotNull(files);
         Assert.assertEquals(1, files.length);
 
-        processedTrades = brs.getTrades();
-        Assert.assertEquals(0, processedTrades.size());
     }
 
     private Trade findById(List<Trade> trades, long id) {

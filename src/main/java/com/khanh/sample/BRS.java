@@ -32,7 +32,16 @@ public class BRS {
 
     public void execute() {
         processNewF365CSVFile();
-        createNuggetFile();
+
+        // I assuming that the BRS will combine all CSV data from multiple new files and export into one .tar.gz file
+        List<Trade> trades = new ArrayList<>();
+        for (Map.Entry<String, List<Trade>> entry : this.trades.entrySet()) {
+            trades.addAll(entry.getValue());
+        }
+
+        createNuggetFile(trades);
+
+        this.trades.clear();
     }
 
     public void processNewF365CSVFile() {
@@ -49,14 +58,8 @@ public class BRS {
         }
     }
 
-    public void createNuggetFile() {
+    public void createNuggetFile(List<Trade> trades) {
         String time = getCurrentTimeString();
-
-        // I assuming that the BRS will combine all CSV data and export into one .tar.gz file
-        List<Trade> trades = new ArrayList<>();
-        for (Map.Entry<String, List<Trade>> entry : this.trades.entrySet()) {
-            trades.addAll(entry.getValue());
-        }
 
         TradeDetails details = new TradeDetails(trades);
         String detailsFilePath = this.nuggetPath + File.separator + time + "-details.xml";
@@ -77,7 +80,7 @@ public class BRS {
         String tarGzFilePath = this.nuggetPath + File.separator + time + ".tar.gz";
         CompressUtil.createTarFile(tarGzFilePath, new String[] { detailsFilePath, metadataFilePath });
 
-        this.trades.clear();
+
     }
 
     private String getCurrentTimeString() {
