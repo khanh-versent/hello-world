@@ -3,10 +3,12 @@ package com.khanh.sample;
 import com.khanh.sample.models.Trade;
 import com.khanh.sample.utils.CSVUtil;
 import com.khanh.sample.utils.FileUtil;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BRSTest {
     long id = 1;
-    Map<String, List<Trade>> createdTrades;
+    Map<String, List<Trade>> createdTrades = new HashMap<>();
     private static final double DELTA = 1e-15;
 
     @Test
@@ -29,6 +31,7 @@ public class BRSTest {
         int amountOfSet = 5;
         FileUtil.deleteDirectory("sim");
 
+        createdTrades.clear();
         createCSVFiles(amountOfSet);
         BRS brs = new BRS("sim", "brs");
 
@@ -38,6 +41,7 @@ public class BRSTest {
         Map<String, List<Trade>> processedTrades = brs.getTrades();
         Assert.assertEquals(0, processedTrades.size());
 
+        createdTrades.clear();
         createCSVFiles(amountOfSet);
         brs.processNewF365CSVFile();
         processedTrades = brs.getTrades();
@@ -47,7 +51,7 @@ public class BRSTest {
             Assert.assertTrue(processedTrades.containsKey(entry.getKey()));
 
             List<Trade> trades = processedTrades.get(entry.getKey());
-            for(Trade trade : trades) {
+            for (Trade trade : trades) {
                 Trade foundTrade = findById(entry.getValue(), trade.getTradeId());
                 Assert.assertNotNull(foundTrade);
                 Assert.assertEquals(foundTrade.getVolume(), trade.getVolume(), DELTA);
@@ -55,6 +59,29 @@ public class BRSTest {
                 Assert.assertEquals(foundTrade.getDescription(), trade.getDescription());
             }
         }
+    }
+
+    @Test
+    public void testCreateNuggetFile() throws IOException {
+        int amountOfSet = 5;
+        FileUtil.deleteDirectory("sim");
+        FileUtil.deleteDirectory("brs");
+
+        BRS brs = new BRS("sim", "brs");
+        createCSVFiles(amountOfSet);
+        brs.processNewF365CSVFile();
+
+        Map<String, List<Trade>> processedTrades = brs.getTrades();
+        Assert.assertEquals(amountOfSet, processedTrades.size());
+
+        brs.createNuggetFile();
+        FileFilter filter = new RegexFileFilter(".*\\.tar\\.gz");
+        File[] files = new File("brs").listFiles(filter);
+        Assert.assertNotNull(files);
+        Assert.assertEquals(1, files.length);
+
+        processedTrades = brs.getTrades();
+        Assert.assertEquals(0, processedTrades.size());
     }
 
     private Trade findById(List<Trade> trades, long id) {
@@ -67,7 +94,7 @@ public class BRSTest {
     }
 
     private void createCSVFiles(int amountOfSet) throws IOException {
-        createdTrades = new HashMap<>();
+
         for(int i = 0; i < amountOfSet; i++) {
             List<Trade> trades = getTrades();
 

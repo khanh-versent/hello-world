@@ -32,17 +32,7 @@ public class BRS {
 
     public void execute() {
         processNewF365CSVFile();
-        createNuggetFiles();
-    }
-
-    public void createNuggetFiles() {
-        for(String fileName : this.getTrades().keySet()) {
-            try {
-                createNuggetFile(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        createNuggetFile();
     }
 
     public void processNewF365CSVFile() {
@@ -53,27 +43,41 @@ public class BRS {
             try {
                 List<Trade> newTrades = CSVUtil.readFromFile(file, Trade.class);
                 this.getTrades().put(file.getName(), newTrades);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void createNuggetFile(String fileName) throws IOException {
+    public void createNuggetFile() {
         String time = getCurrentTimeString();
 
-        TradeDetails details = new TradeDetails(this.getTrades().get(fileName));
-        String detailsFilePath = this.nuggetPath + File.separator + time + "-details.xml";
-        XmlUtil.writeToFile(detailsFilePath, details);
+        // I assuming that the BRS will combine all CSV data and export into one .tar.gz file
+        List<Trade> trades = new ArrayList<>();
+        for (Map.Entry<String, List<Trade>> entry : this.trades.entrySet()) {
+            trades.addAll(entry.getValue());
+        }
 
-        TradeMetadata metadata = new TradeMetadata(this.getTrades().get(fileName));
+        TradeDetails details = new TradeDetails(trades);
+        String detailsFilePath = this.nuggetPath + File.separator + time + "-details.xml";
+        try {
+            XmlUtil.writeToFile(detailsFilePath, details);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        TradeMetadata metadata = new TradeMetadata(trades);
         String metadataFilePath = this.nuggetPath + File.separator + time + "-metadata.xml";
-        XmlUtil.writeToFile(metadataFilePath, metadata);
+        try {
+            XmlUtil.writeToFile(metadataFilePath, metadata);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String tarGzFilePath = this.nuggetPath + File.separator + time + ".tar.gz";
         CompressUtil.createTarFile(tarGzFilePath, new String[] { detailsFilePath, metadataFilePath });
 
-        this.getTrades().remove(fileName);
+        this.trades.clear();
     }
 
     private String getCurrentTimeString() {
