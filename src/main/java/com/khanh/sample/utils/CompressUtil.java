@@ -58,6 +58,19 @@ public class CompressUtil {
         }
     }
 
+    public static void extractTarFile(File tarGzFile, File destFile) throws IOException {
+        String tarFilePath = getTarFileName(tarGzFile);
+        File tarFile = new File(tarFilePath);
+        tarFile = deCompressGZipFile(tarGzFile, tarFile);
+
+        if (!destFile.exists()) {
+            destFile.mkdir();
+        }
+        // Calling method to untar file
+        unTarFile(tarFile, destFile);
+        tarFile.delete();
+    }
+
     public static void extractTarFile(String fileName, String destination) throws IOException {
         File tarGzFile = new File(fileName);
         String tarFilePath = getTarFileName(tarGzFile);

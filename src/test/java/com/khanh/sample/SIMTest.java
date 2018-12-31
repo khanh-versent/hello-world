@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SIMTest {
@@ -38,7 +37,7 @@ public class SIMTest {
         Assert.assertTrue(FileUtil.deleteDirectory(csvPath));
         SIM sim = new SIM(csvPath);
 
-        List<Trade> originalTrades = generateTrades(10, 1);
+        List<Trade> originalTrades = TestUtil.generateTrades(10, 1);
         sim.createF365CSVFile(originalTrades);
 
         File[] files = new File(csvPath).listFiles();
@@ -47,14 +46,5 @@ public class SIMTest {
 
         List<Trade> savedTrades = CSVUtil.readFromFile(files[0], Trade.class);
         TestUtil.assertEqualsTrades(originalTrades, savedTrades);
-    }
-
-    private List<Trade> generateTrades(int amount, long startId) {
-        List<Trade> trades = new ArrayList<Trade>();
-        for(int i = 0; i < amount; i++) {
-            long id = i + startId;
-            trades.add(new Trade(id, TestUtil.getRandomDouble(), TestUtil.getRandomDouble(), "Trade " + id));
-        }
-        return trades;
     }
 }

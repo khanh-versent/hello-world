@@ -45,10 +45,10 @@ public class BRS {
     }
 
     public void processNewF365CSVFile() {
-        List<File> files = getNewFilesList();
+        List<File> files = getNewFilesList(this.csvPath, this.lastCheckCsv);
         this.lastCheckCsv = new Date();
 
-        for(File file : files) {
+        for (File file : files) {
             try {
                 List<Trade> newTrades = CSVUtil.readFromFile(file, Trade.class);
                 this.getTrades().put(file.getName(), newTrades);
@@ -58,7 +58,7 @@ public class BRS {
         }
     }
 
-    public void createNuggetFile(List<Trade> trades) {
+    public String createNuggetFile(List<Trade> trades) {
         String time = getCurrentTimeString();
 
         TradeDetails details = new TradeDetails(trades);
@@ -77,10 +77,11 @@ public class BRS {
             e.printStackTrace();
         }
 
-        String tarGzFilePath = this.nuggetPath + File.separator + time + ".tar.gz";
-        CompressUtil.createTarFile(tarGzFilePath, new String[] { detailsFilePath, metadataFilePath });
+        String fileName = time + ".tar.gz";
+        String tarGzFilePath = this.nuggetPath + File.separator + fileName;
+        CompressUtil.createTarFile(tarGzFilePath, new String[]{detailsFilePath, metadataFilePath});
 
-
+        return fileName;
     }
 
     private String getCurrentTimeString() {
@@ -89,9 +90,9 @@ public class BRS {
         return df.format(today);
     }
 
-    private List<File> getNewFilesList() {
+    private List<File> getNewFilesList(String path, Date lastCheck) {
         try {
-            return FileUtil.getNewFiles(this.csvPath, lastCheckCsv.getTime());
+            return FileUtil.getNewFiles(path, lastCheck.getTime());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,6 +4,9 @@ import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class FileUtil {
@@ -47,12 +50,22 @@ public class FileUtil {
         File directory = new File(path);
         if (directory.exists()) {
             File[] files = directory.listFiles();
-            if(files != null) {
+            if (files != null) {
                 for (File file : files) {
                     file.delete();
                 }
             }
             return directory.delete();
+        }
+        return true;
+    }
+
+    public static boolean copyFile(File source, File destination) throws IOException {
+        if(destination.isDirectory()) {
+            String path = destination.getPath() + File.separator + source.getName();
+            Files.copy(source.toPath(), Path.of(path), StandardCopyOption.REPLACE_EXISTING);
+        } else {
+            Files.copy(source.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         return true;
     }

@@ -10,16 +10,13 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class BRSTest {
     long id = 1;
     Map<String, List<Trade>> createdTrades = new HashMap<>();
-    private static final double DELTA = 1e-15;
 
     @Test
     public void testExecute() {
@@ -54,13 +51,13 @@ public class BRSTest {
     }
 
     @Test
-    public void testCreateNuggetFile() throws IOException {
+    public void testCreateNuggetFile()  {
         FileUtil.deleteDirectory("sim");
         FileUtil.deleteDirectory("brs");
 
         BRS brs = new BRS("sim", "brs");
 
-        List<Trade> trades = getTrades();
+        List<Trade> trades = getTrades(10);
 
         brs.createNuggetFile(trades);
         FileFilter filter = new RegexFileFilter(".*\\.tar\\.gz");
@@ -70,21 +67,12 @@ public class BRSTest {
 
     }
 
-    private Trade findById(List<Trade> trades, long id) {
-        for(Trade trade : trades) {
-            if(trade.getTradeId() == id) {
-                return trade;
-            }
-        }
-        return null;
-    }
-
     private void createCSVFiles(int amountOfSet) throws IOException {
 
         for(int i = 0; i < amountOfSet; i++) {
-            List<Trade> trades = getTrades();
+            List<Trade> trades = getTrades(10);
 
-            String path = "sim" + File.separator + "trades" + trades.get(1).getTradeId() + ".csv";
+            String path = "sim" + File.separator + "trades" + trades.get(0).getTradeId() + ".csv";
             CSVUtil.writeToFile(path, Trade.class, trades);
 
             File file = new File(path);
@@ -92,15 +80,9 @@ public class BRSTest {
         }
     }
 
-    private List<Trade> getTrades() {
-        List<Trade> trades = new ArrayList<>();
-        trades.add(new Trade(id, getRandomDouble(), getRandomDouble(), "Trade " + id++));
-        trades.add(new Trade(id, getRandomDouble(), getRandomDouble(), "Trade " + id++));
-        trades.add(new Trade(id, getRandomDouble(), getRandomDouble(), "Trade " + id++));
+    private List<Trade> getTrades(int amount) {
+        List<Trade> trades = TestUtil.generateTrades(amount, id);
+        id += amount;
         return trades;
-    }
-
-    private double getRandomDouble() {
-        return ThreadLocalRandom.current().nextDouble();
     }
 }
