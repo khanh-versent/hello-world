@@ -59,6 +59,9 @@ public class BRS {
     }
 
     public String createNuggetFile(List<Trade> trades) {
+        if(trades.size() == 0)
+            return "";
+
         String time = getCurrentTimeString();
 
         TradeDetails details = new TradeDetails(trades);
@@ -79,7 +82,11 @@ public class BRS {
 
         String fileName = time + ".tar.gz";
         String tarGzFilePath = this.nuggetPath + File.separator + fileName;
-        CompressUtil.createTarFile(tarGzFilePath, new String[]{detailsFilePath, metadataFilePath});
+        try {
+            CompressUtil.createTarFile(tarGzFilePath, new String[]{detailsFilePath, metadataFilePath});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return fileName;
     }

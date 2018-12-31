@@ -28,7 +28,7 @@ public class FlowTest {
         sim.execute();
         validation.verifyF365CSVFile();
 
-        brs.execute();
+        /*brs.execute();
         validation.verifyNuggetFile(NUGGET_PATH);
 
         dmp.executeNugget();
@@ -39,6 +39,6 @@ public class FlowTest {
         validation.verifyF46CSVFile(F46_CSV_PATH);
 
         dmp.executeF46CSV();
-        validation.verifyF46CSVFile(ARCHIVED_PATH);
+        validation.verifyF46CSVFile(ARCHIVED_PATH);*/
     }
 }

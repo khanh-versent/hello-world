@@ -11,7 +11,9 @@ import java.util.zip.GZIPOutputStream;
 
 public class CompressUtil {
 
-    public static void createTarFile(String fileName, String[] compressingFileNames) {
+    public static void createTarFile(String fileName, String[] compressingFileNames) throws Exception {
+        if(compressingFileNames.length == 0)
+            throw new Exception("No file to compress");
 
         TarArchiveOutputStream tarOs = null;
         try {

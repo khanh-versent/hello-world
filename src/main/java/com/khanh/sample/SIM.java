@@ -25,6 +25,9 @@ public class SIM {
     }
 
     public void createF365CSVFile(List<Trade> data) {
+        if(data.size() == 0)
+            return;
+
         String fileName = this.csvPath + File.separator + getCurrentTimeString() + ".csv";
 
         try {

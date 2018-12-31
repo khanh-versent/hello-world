@@ -18,7 +18,7 @@ public class CompressUtilTest {
     String compressFile = "compress.tar.gz";
 
     @Test
-    public void testCompressUtilCreateTarFile() throws IOException {
+    public void testCompressUtilCreateTarFile() throws Exception {
 
         for(int i = 0; i < fileCount; i++) {
             createFile(fileNames[i], fileContents[i]);
@@ -31,7 +31,7 @@ public class CompressUtilTest {
     }
 
     @Test
-    public void testCompressUtilExtractTarFile() throws IOException {
+    public void testCompressUtilExtractTarFile() throws Exception {
 
         for (String fileName : fileNames) {
             File file = new File(fileName);
