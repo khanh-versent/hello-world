@@ -44,11 +44,13 @@ public class DMP {
 
     public void forwardNuggets() {
         try {
-            for (String nugget : getNuggetData().keySet()) {
-                // TODO process data collected from those files
+            for(Iterator<Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>>> it = this.nuggetData.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>> entry = it.next();
 
-                forwardNuggetFile(nugget, this.forwardedNuggetPath);
-                archivedNuggetFile(nugget, this.archivedNuggetPath);
+                forwardNuggetFile(entry.getKey(), this.forwardedNuggetPath);
+                archivedNuggetFile(entry.getKey(), this.archivedNuggetPath);
+
+                it.remove();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -70,6 +72,7 @@ public class DMP {
         lastNuggetCheck = new Date();
 
         for (File nuggetFile : files) {
+
             try {
                 TradeDetails details = null;
                 TradeMetadata metadata = null;
@@ -90,6 +93,7 @@ public class DMP {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
     }
