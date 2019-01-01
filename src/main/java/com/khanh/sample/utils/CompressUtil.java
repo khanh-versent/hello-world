@@ -6,6 +6,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -60,7 +62,10 @@ public class CompressUtil {
         }
     }
 
-    public static void extractTarFile(File tarGzFile, File destFile) throws IOException {
+    public static List<String> extractTarFile(File tarGzFile, File destFile) throws IOException {
+        if(tarGzFile.isDirectory())
+            throw new IOException("tarGzFile is a directory");
+
         String tarFilePath = getTarFileName(tarGzFile);
         File tarFile = new File(tarFilePath);
         tarFile = deCompressGZipFile(tarGzFile, tarFile);
@@ -68,27 +73,22 @@ public class CompressUtil {
         if (!destFile.exists()) {
             destFile.mkdir();
         }
+
         // Calling method to untar file
-        unTarFile(tarFile, destFile);
+        List<String> extractedFilePaths = unTarFile(tarFile, destFile);
         tarFile.delete();
+        return extractedFilePaths;
     }
 
     public static void extractTarFile(String fileName, String destination) throws IOException {
         File tarGzFile = new File(fileName);
-        String tarFilePath = getTarFileName(tarGzFile);
-        File tarFile = new File(tarFilePath);
-        tarFile = deCompressGZipFile(tarGzFile, tarFile);
-
         File destFile = new File(destination);
-        if (!destFile.exists()) {
-            destFile.mkdir();
-        }
-        // Calling method to untar file
-        unTarFile(tarFile, destFile);
-        tarFile.delete();
+        extractTarFile(tarGzFile, destFile);
     }
 
-    static void unTarFile(File tarFile, File destFile) throws IOException {
+    static List<String> unTarFile(File tarFile, File destFile) throws IOException {
+        List<String> paths = new ArrayList<>();
+
         FileInputStream fis = new FileInputStream(tarFile);
         TarArchiveInputStream tis = new TarArchiveInputStream(fis);
         TarArchiveEntry tarEntry = null;
@@ -106,9 +106,12 @@ public class CompressUtil {
                 FileOutputStream fos = new FileOutputStream(outputFile);
                 IOUtils.copy(tis, fos);
                 fos.close();
+
+                paths.add(outputFile.getAbsolutePath());
             }
         }
         tis.close();
+        return paths;
     }
 
     static File deCompressGZipFile(File gZippedFile, File tarFile) throws IOException {

@@ -16,6 +16,9 @@ public class FileUtil {
 
         File[] files = getFiles(directoryPath, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
         for (File file : files) {
+            if(file.isDirectory()) {
+                continue;
+            }
             if (file.lastModified() > lastCheck) {
                 newFiles.add(file);
             } else {
@@ -61,6 +64,9 @@ public class FileUtil {
     }
 
     public static boolean copyFile(File source, File destination) throws IOException {
+        if(!destination.exists())
+            destination.mkdirs();
+
         if(destination.isDirectory()) {
             String path = destination.getPath() + File.separator + source.getName();
             Files.copy(source.toPath(), Path.of(path), StandardCopyOption.REPLACE_EXISTING);

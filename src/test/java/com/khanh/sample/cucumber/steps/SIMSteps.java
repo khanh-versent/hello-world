@@ -1,6 +1,5 @@
 package com.khanh.sample.cucumber.steps;
 
-import com.khanh.sample.BRS;
 import com.khanh.sample.SIM;
 import com.khanh.sample.TestUtil;
 import com.khanh.sample.models.Trade;
@@ -35,7 +34,6 @@ public class SIMSteps {
     public void thenBRSCreateNuggetFile(int amountOfFile, int amountOfTrade, String folder) throws IOException {
         File dir = new File(folder);
 
-        int count = 0;
         File[] files = dir.listFiles();
 
         Assert.assertEquals(files.length, amountOfFile);

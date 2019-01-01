@@ -88,6 +88,9 @@ public class BRS {
             e.printStackTrace();
         }
 
+        new File(detailsFilePath).delete();
+        new File(metadataFilePath).delete();
+
         return fileName;
     }
 
