@@ -33,7 +33,7 @@ public class TestUtil {
         TradeDetails details = null;
         TradeMetadata metadata = null;
 
-        List<String> filePaths = CompressUtil.extractTarFile(nuggetFile, nuggetFile.getParentFile());
+        List<String> filePaths = CompressUtil.extractTarFile(nuggetFile);
         for (String extractedFilePath : filePaths) {
             if (extractedFilePath.contains("details"))
                 details = XmlUtil.readFromFile(extractedFilePath, TradeDetails.class);

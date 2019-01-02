@@ -62,6 +62,10 @@ public class CompressUtil {
         }
     }
 
+    public static List<String> extractTarFile(File tarGzFile) throws IOException {
+        return extractTarFile(tarGzFile, new File("."));
+    }
+
     public static List<String> extractTarFile(File tarGzFile, File destFile) throws IOException {
         if(tarGzFile.isDirectory())
             throw new IOException("tarGzFile is a directory");

@@ -28,10 +28,10 @@ public class SIM {
         if(data.size() == 0)
             return;
 
-        String fileName = this.csvPath + File.separator + getCurrentTimeString() + ".csv";
+        String fileName = getCurrentTimeString() + ".csv";
 
         try {
-            CSVUtil.writeToFile(fileName, Trade.class, data);
+            CSVUtil.writeToFile(this.csvPath + File.separator + fileName, Trade.class, data);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

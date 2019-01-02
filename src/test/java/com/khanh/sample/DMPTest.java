@@ -36,11 +36,17 @@ public class DMPTest {
 
         Assert.assertEquals(0, dmp.getNuggetData().size());
         dmp.processNewNuggetFile();
+
+        Map<String, Map.Entry<TradeDetails, TradeMetadata>> map = dmp.getNuggetData();
         Assert.assertEquals(1, dmp.getNuggetData().size());
+
+        Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>> entry = map.entrySet().iterator().next();
+        TestUtil.assertEqualsTrades(trades, entry.getValue().getValue().getTrades());
+        TestUtil.assertEqualsTrades(trades, entry.getValue().getKey().getTrades());
     }
 
     @Test
-    public void testForwardNuggets() {
+    public void testForwardNuggets() throws IOException {
         FileUtil.deleteDirectory(nuggetPath);
         FileUtil.deleteDirectory(forwardedNuggetPath);
         FileUtil.deleteDirectory(archivedNuggetPath);
@@ -69,8 +75,8 @@ public class DMPTest {
         Assert.assertNotNull(files);
         Assert.assertEquals(1, files.length);
 
-        Map<String, Map.Entry<TradeDetails, TradeMetadata>> emptyMap = dmp.getNuggetData();
-        Assert.assertEquals(0, emptyMap.size());
+        assertNuggetFileInPath(forwardedNuggetPath, trades);
+        assertNuggetFileInPath(archivedNuggetPath, trades);
     }
 
     @Test
@@ -91,25 +97,39 @@ public class DMPTest {
         Assert.assertEquals(0, dmp.getNuggetData().size());
         dmp.executeNugget();
 
-        File forwardedFile = new File(forwardedNuggetPath);
+        assertNuggetFileInPath(forwardedNuggetPath, trades);
+        assertNuggetFileInPath(archivedNuggetPath, trades);
+    }
+
+    @Test
+    public void testExecuteF46CSV() {
+        FileUtil.deleteDirectory(nuggetPath);
+        FileUtil.deleteDirectory(forwardedNuggetPath);
+        FileUtil.deleteDirectory(archivedNuggetPath);
+        FileUtil.deleteDirectory(f46CsvPath);
+
+        DMP dmp = new DMP(nuggetPath, forwardedNuggetPath, archivedNuggetPath, f46CsvPath);
+        BNP bnp = new BNP(forwardedNuggetPath, f46CsvPath);
+
+        List<Trade> trades = TestUtil.generateTrades(10, 1);
+
+        bnp.createF46CSVFile(trades);
+        dmp.executeF46CSV();
+
+        Map<String, List<Trade>> savedTrades = dmp.getCsvData();
+        Assert.assertEquals(1, savedTrades.size());
+
+        Map.Entry<String, List<Trade>> entry = savedTrades.entrySet().iterator().next();
+        TestUtil.assertEqualsTrades(trades, entry.getValue());
+    }
+
+    private void assertNuggetFileInPath(String path, List<Trade> trades) throws IOException {
+        File forwardedFile = new File(path);
         Assert.assertNotNull(forwardedFile);
         File[] files = forwardedFile.listFiles();
         Assert.assertNotNull(files);
         Assert.assertEquals(1, files.length);
 
         TestUtil.assertCheckNuggetFile(trades, files[0]);
-
-        File archivedFile = new File(archivedNuggetPath);
-        Assert.assertNotNull(archivedFile);
-        files = archivedFile.listFiles();
-        Assert.assertNotNull(files);
-        Assert.assertEquals(1, files.length);
-
-        TestUtil.assertCheckNuggetFile(trades, files[0]);
-    }
-
-    @Test
-    public void testExecuteF46CSV() {
-
     }
 }

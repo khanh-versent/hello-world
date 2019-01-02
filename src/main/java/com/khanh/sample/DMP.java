@@ -34,7 +34,8 @@ public class DMP {
         lastNuggetCheck = new Date();
         lastCSVCheck = new Date();
 
-        setNuggetData(new HashMap<>());
+        this.nuggetData = new HashMap<>();
+        this.csvData = new HashMap<>();
     }
 
     public void executeNugget() {
@@ -78,7 +79,7 @@ public class DMP {
                 TradeDetails details = null;
                 TradeMetadata metadata = null;
 
-                List<String> filePaths = CompressUtil.extractTarFile(nuggetFile, nuggetFile.getParentFile());
+                List<String> filePaths = CompressUtil.extractTarFile(nuggetFile);
                 for (String extractedFilePath : filePaths) {
                     if (extractedFilePath.contains("details"))
                         details = XmlUtil.readFromFile(extractedFilePath, TradeDetails.class);
@@ -141,5 +142,11 @@ public class DMP {
 
     public void setNuggetData(Map<String, Map.Entry<TradeDetails, TradeMetadata>> nuggetData) {
         this.nuggetData = nuggetData;
+    }
+
+    public Map<String, List<Trade>> getCsvData() { return csvData; }
+
+    public void setCsvData(Map<String, List<Trade>> csvData) {
+        this.csvData = csvData;
     }
 }

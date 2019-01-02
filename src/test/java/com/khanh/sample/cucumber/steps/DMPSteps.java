@@ -5,8 +5,6 @@ import com.khanh.sample.DMP;
 import com.khanh.sample.SIM;
 import com.khanh.sample.TestUtil;
 import com.khanh.sample.models.Trade;
-import com.khanh.sample.models.TradeDetails;
-import com.khanh.sample.models.TradeMetadata;
 import com.khanh.sample.utils.FileUtil;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -16,7 +14,6 @@ import org.junit.Assert;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class DMPSteps {
     SIM sim;
@@ -44,7 +41,8 @@ public class DMPSteps {
     }
 
     @Then("DMP sees (\\d+) new file ends with \"(.*)\" containing those (\\d+) trades in \"(.*)\", then send copy to \"([\\w\\d]+)\", and \"([\\w]+)\" folders")
-    public void thenDMPReadNuggetFile(int amountOfFile, String fileType, int amountOfTrade, String brsFolder, String forwardedFolder, String archivedFolder) throws IOException {
+    public void thenDMPReadNuggetFile(int amountOfFile, String fileType, int amountOfTrade,
+                                      String brsFolder, String forwardedFolder, String archivedFolder) throws IOException {
         File dir = new File(brsFolder);
 
         int count = 0;
@@ -58,25 +56,19 @@ public class DMPSteps {
 
         dmp.executeNugget();
 
-        Map<String, Map.Entry<TradeDetails, TradeMetadata>> data = dmp.getNuggetData();
-        Assert.assertEquals(amountOfFile, data.size());
-
-        for(Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>> entry : data.entrySet()) {
-            TradeDetails details = entry.getValue().getKey();
-            TradeMetadata metadata = entry.getValue().getValue();
-
-            Assert.assertEquals(amountOfTrade, details.getTrades().size());
-            Assert.assertEquals(amountOfTrade, metadata.getTrades().size());
-        }
-
         File file = new File(forwardedFolder);
         Assert.assertNotNull(file);
-        Assert.assertNotNull(file.listFiles());
-        Assert.assertEquals(amountOfFile, file.listFiles().length);
+        files = file.listFiles();
+        Assert.assertNotNull(files);
+        Assert.assertEquals(amountOfFile, files.length);
 
         file = new File(archivedFolder);
         Assert.assertNotNull(file);
-        Assert.assertNotNull(file.listFiles());
-        Assert.assertEquals(amountOfFile, file.listFiles().length);
+        files = file.listFiles();
+        Assert.assertNotNull(files);
+        Assert.assertEquals(amountOfFile, files.length);
+
+        TestUtil.assertCheckNuggetFile(trades, files[0]);
+
     }
 }

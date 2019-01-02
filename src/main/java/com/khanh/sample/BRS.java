@@ -40,7 +40,6 @@ public class BRS {
         }
 
         createNuggetFile(trades);
-
         this.trades.clear();
     }
 
