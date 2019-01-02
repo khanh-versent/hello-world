@@ -99,7 +99,7 @@ public class CompressUtil {
 
         // tarIn is a TarArchiveInputStream
         while ((tarEntry = tis.getNextTarEntry()) != null) {
-            File outputFile = new File(destFile + File.separator + tarEntry.getName());
+            File outputFile = new File(destFile.getPath() + File.separator + tarEntry.getName());
 
             if (tarEntry.isDirectory()) {
                 if (!outputFile.exists()) {
