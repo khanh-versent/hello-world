@@ -9,12 +9,12 @@ public class BNP {
         this.nuggetPath = nuggetPath;
     }
 
-    public void Execute() {
-        checkNewNuggetFile();
+    public void execute() {
+        processNewNuggetFile();
         createF46CSVFile();
     }
 
-    public void checkNewNuggetFile() {
+    public void processNewNuggetFile() {
 
 
     }

@@ -3,6 +3,7 @@ package com.khanh.sample;
 import com.khanh.sample.models.Trade;
 import com.khanh.sample.models.TradeDetails;
 import com.khanh.sample.models.TradeMetadata;
+import com.khanh.sample.utils.CSVUtil;
 import com.khanh.sample.utils.CompressUtil;
 import com.khanh.sample.utils.FileUtil;
 import com.khanh.sample.utils.XmlUtil;
@@ -18,7 +19,7 @@ public class DMP {
     private String csvPath;
 
     private Map<String, Map.Entry<TradeDetails, TradeMetadata>> nuggetData;
-    Map<String, List<Trade>> csvData;
+    private Map<String, List<Trade>> csvData;
 
     Date lastNuggetCheck;
     Date lastCSVCheck;
@@ -47,8 +48,8 @@ public class DMP {
             for(Iterator<Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>>> it = this.nuggetData.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>> entry = it.next();
 
-                forwardNuggetFile(entry.getKey(), this.forwardedNuggetPath);
-                archivedNuggetFile(entry.getKey(), this.archivedNuggetPath);
+                forwardNuggetFile(entry.getKey());
+                archiveNuggetFile(entry.getKey());
 
                 it.remove();
             }
@@ -58,12 +59,12 @@ public class DMP {
     }
 
     public void executeF46CSV() {
-        checkNewF46CSVFile();
+        processNewF46CSVFile();
 
         for (String csv : csvData.keySet()) {
             // TODO process those files
 
-            archivedF46CSVFile(csv);
+            archiveF46CSVFile(csv);
         }
     }
 
@@ -98,21 +99,30 @@ public class DMP {
 
     }
 
-    private void forwardNuggetFile(String source, String destination) throws IOException {
-        FileUtil.copyFile(new File(this.nuggetPath + File.separator + source), new File(destination));
+    private void forwardNuggetFile(String source) throws IOException {
+        FileUtil.copyFile(new File(this.nuggetPath + File.separator + source), new File(this.forwardedNuggetPath));
     }
 
-    private void archivedNuggetFile(String source, String destination) throws IOException {
-        FileUtil.copyFile(new File(this.nuggetPath + File.separator + source), new File(destination));
+    private void archiveNuggetFile(String source) throws IOException {
+        FileUtil.copyFile(new File(this.nuggetPath + File.separator + source), new File(this.archivedNuggetPath));
     }
 
 
-    public void checkNewF46CSVFile() {
-
+    public void processNewF46CSVFile() {
+        List<File> files = getNewFilesList(this.csvPath, this.lastCSVCheck);
         lastCSVCheck = new Date();
+
+        for(File csvFile : files) {
+            try {
+                List<Trade> trades = CSVUtil.readFromFile(csvFile, Trade.class);
+                csvData.put(csvFile.getName(), trades);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public boolean archivedF46CSVFile(String filePath) {
+    public boolean archiveF46CSVFile(String filePath) {
         return true;
     }
 

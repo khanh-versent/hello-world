@@ -35,7 +35,7 @@ public class FlowTest {
         validation.verifyNuggetFile(FORWARDED_NUGGET_PATH);
         validation.verifyNuggetFile(ARCHIVED_PATH);
 
-        bnp.Execute();
+        bnp.execute();
         validation.verifyF46CSVFile(F46_CSV_PATH);
 
         dmp.executeF46CSV();
