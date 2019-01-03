@@ -68,7 +68,7 @@ public class CompressUtil {
 
     public static List<String> extractTarFile(File tarGzFile, File destFile) throws IOException {
         if(tarGzFile.isDirectory())
-            throw new IOException("tarGzFile is a directory");
+            throw new IOException("tarGzFile is a directory, not an actual file.");
 
         String tarFilePath = getTarFileName(tarGzFile);
         File tarFile = new File(tarFilePath);
@@ -85,8 +85,8 @@ public class CompressUtil {
     }
 
     public static void extractTarFile(String fileName, String destination) throws IOException {
-        File tarGzFile = new File(fileName);
         File destFile = new File(destination);
+        File tarGzFile = new File(fileName);
         extractTarFile(tarGzFile, destFile);
     }
 
@@ -99,7 +99,7 @@ public class CompressUtil {
 
         // tarIn is a TarArchiveInputStream
         while ((tarEntry = tis.getNextTarEntry()) != null) {
-            File outputFile = new File(destFile.getPath() + File.separator + tarEntry.getName());
+            File outputFile = new File(destFile.getAbsolutePath() + File.separator + tarEntry.getName());
 
             if (tarEntry.isDirectory()) {
                 if (!outputFile.exists()) {

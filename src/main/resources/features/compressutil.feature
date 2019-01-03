@@ -9,4 +9,4 @@ Feature: CompressUtil
     | data/sub2/file5.txt | File5   |
     When  CompressUtil compress all file to "data/test.tar.gz" file
     Then  "data" folder has "test.tar.gz" file
-    And   CompressUtil is able to decompress the same structure to "temp" folder
+    And   CompressUtil is able to decompress the same structure to "data/temp" folder

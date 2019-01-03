@@ -13,9 +13,9 @@ import java.nio.file.Paths;
 
 public class CompressUtilTest {
     int fileCount = 3;
-    String[] fileNames = {"textfile1.txt", "textfile2.txt", "sub/textfile3.txt"};
+    String[] fileNames = {"data/textfile1.txt", "data/textfile2.txt", "data/sub/textfile3.txt"};
     String[] fileContents = {"textfile1", "textfile2", "textfile3"};
-    String compressFile = "compress.tar.gz";
+    String compressFile = "data/compress.tar.gz";
 
     @Test
     public void testCompressUtilCreateTarFile() throws Exception {
@@ -42,10 +42,10 @@ public class CompressUtilTest {
 
         testCompressUtilCreateTarFile();
 
-        CompressUtil.extractTarFile(compressFile, "compress");
+        CompressUtil.extractTarFile(compressFile, FileUtil.combinePath("data", "compress"));
 
         for(int i = 0; i < fileCount; i++) {
-            String path = "compress" + File.separator + fileNames[i];
+            String path = FileUtil.combinePath("data", "compress", fileNames[i]);
             Assert.assertTrue(new File(path).exists());
 
             String content = Files.readString(Paths.get(path)).trim();

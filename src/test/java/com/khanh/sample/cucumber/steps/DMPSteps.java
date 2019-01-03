@@ -40,7 +40,7 @@ public class DMPSteps {
         brs.execute();
     }
 
-    @Then("DMP sees (\\d+) new file ends with \"(.*)\" containing those (\\d+) trades in \"(.*)\", then send copy to \"([\\w\\d]+)\", and \"([\\w]+)\" folders")
+    @Then("DMP sees (\\d+) new file ends with \"(.*)\" containing those (\\d+) trades in \"(.*)\", then send copy to \"(.*)\", and \"(.*)\" folders")
     public void thenDMPReadNuggetFile(int amountOfFile, String fileType, int amountOfTrade,
                                       String brsFolder, String forwardedFolder, String archivedFolder) throws IOException {
         File dir = new File(brsFolder);

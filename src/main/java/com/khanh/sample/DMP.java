@@ -40,7 +40,6 @@ public class DMP {
 
     public void executeNugget() {
         processNewNuggetFile();
-
         forwardNuggets();
     }
 
@@ -63,9 +62,12 @@ public class DMP {
         processNewF46CSVFile();
 
         for (String csv : csvData.keySet()) {
-            // TODO process those files
 
-            archiveF46CSVFile(csv);
+            try {
+                archiveF46CSVFile(csv);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -123,8 +125,8 @@ public class DMP {
         }
     }
 
-    public boolean archiveF46CSVFile(String filePath) {
-        return true;
+    public void archiveF46CSVFile(String source) throws IOException {
+        FileUtil.copyFile(new File(this.csvPath + File.separator + source), new File(this.archivedNuggetPath));
     }
 
     private List<File> getNewFilesList(String path, Date lastCheck) {

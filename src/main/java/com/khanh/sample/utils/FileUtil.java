@@ -102,4 +102,8 @@ public class FileUtil {
         }
         return true;
     }
+
+    public static String combinePath(String... parts) {
+        return String.join(File.separator, parts);
+    }
 }

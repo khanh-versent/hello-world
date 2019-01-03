@@ -41,6 +41,4 @@ public class CSVUtil {
                 .readAll();
         return result;
     }
-
-
 }

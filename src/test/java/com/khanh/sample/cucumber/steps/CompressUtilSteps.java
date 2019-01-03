@@ -60,7 +60,7 @@ public class CompressUtilSteps {
     public void andDeCompressFile(String destination) throws IOException {
         CompressUtil.extractTarFile(tarGzFilePath, destination);
 
-        File directory = new File("data" + File.separator + "temp");
+        File directory = new File("data" + File.separator + destination);
 
         // recursively check content of folder
         assertFileContent(directory);
