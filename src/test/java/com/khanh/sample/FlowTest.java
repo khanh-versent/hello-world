@@ -17,7 +17,7 @@ public class FlowTest {
     @Test
     public void testEndToEndFlow() {
         SIM sim = new SIM(F365_CSV_PATH);
-        Validation validation = new Validation(F365_CSV_PATH, NUGGET_PATH, FORWARDED_NUGGET_PATH, ARCHIVED_PATH, F46_CSV_PATH);
+        Validator validator = new Validator(F365_CSV_PATH, NUGGET_PATH, FORWARDED_NUGGET_PATH, ARCHIVED_PATH, F46_CSV_PATH);
         BRS brs = new BRS(F365_CSV_PATH, NUGGET_PATH);
         DMP dmp = new DMP(NUGGET_PATH, FORWARDED_NUGGET_PATH, ARCHIVED_PATH, F46_CSV_PATH);
         BNP bnp = new BNP(FORWARDED_NUGGET_PATH, F46_CSV_PATH);
@@ -26,19 +26,19 @@ public class FlowTest {
 
         sim.setTrades(trades);
         sim.execute();
-        validation.verifyF365CSVFile();
+        validator.verifyF365CSVFile();
 
         /*brs.execute();
-        validation.verifyNuggetFile(NUGGET_PATH);
+        validator.verifyNuggetFile(NUGGET_PATH);
 
         dmp.executeNugget();
-        validation.verifyNuggetFile(FORWARDED_NUGGET_PATH);
-        validation.verifyNuggetFile(ARCHIVED_PATH);
+        validator.verifyNuggetFile(FORWARDED_NUGGET_PATH);
+        validator.verifyNuggetFile(ARCHIVED_PATH);
 
         bnp.execute();
-        validation.verifyF46CSVFile(F46_CSV_PATH);
+        validator.verifyF46CSVFile(F46_CSV_PATH);
 
         dmp.executeF46CSV();
-        validation.verifyF46CSVFile(ARCHIVED_PATH);*/
+        validator.verifyF46CSVFile(ARCHIVED_PATH);*/
     }
 }

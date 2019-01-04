@@ -1,6 +1,6 @@
 Feature: REST GetTrade
 
-  Scenario Outline: RESTful API getting trades information
+  Scenario Outline: Login via Web
     Given RESTful server runs at localhost, port 8080
     And   System has <trade amount> trades that id is starting from <start id>
     When  API request to /trades/list?pageSize=<page size>&pageIndex=<page index>
