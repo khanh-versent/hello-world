@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <div>
+        <a href="http://www.versent.com.au">
+            <img src="https://uploads-ssl.webflow.com/5ab350b53c0d5f3d6462a20a/5ab350b53c0d5ff3f762a245_logo-white.svg" />
+        </a>
+    </div>
+    <form action="/doaddtrade" method="POST">
+        <select name="trade">
+            <option value=""></option>
+            <option value="1">Trade 1</option>
+            <option value="2">Trade 2</option>
+            <option value="3">Trade 3</option>
+        </select>
+        <input type="text" name="volume" placeholder="Volume" /><br/>
+        <input type="text" name="price" placeholder="Price" /><br/>
+        <input type="radio" name="type" value="buy"> Buy
+        <input type="radio" name="type" value="sell"> Sell <br/>
+        <input type="text" name="note" placeholder="Note" /><br/>
+        <input type="submit" name="submit" value="Submit" />
+    </form>
+</body>
+</html>

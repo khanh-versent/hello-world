@@ -11,36 +11,27 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.io.IOException;
 
 public class WebLoginSteps {
-    SimpleHttpServer server;
-    String hostname;
-    int port;
-    WebDriver webDriver;
+    private SimpleHttpServer server;
+    private WebDriver webDriver;
 
-    @Given("Web server runs at (.*) and port (\\d+)")
-    public void givenWebServer(String hostname, int port) throws IOException {
-        this.hostname = hostname;
-        this.port = port;
-
+    @Given("Web server runs at (.*) and port (\\d+). User accesses login page at (.*)")
+    public void givenUserAccessLoginPage(String hostname, int port, String path) throws IOException {
         this.server = new SimpleHttpServer(hostname, port);
-    }
 
-    @Given("User accesses (.*) page")
-    public void givenAccessLogin(String path) {
         this.webDriver = new ChromeDriver();
-        this.webDriver.get(String.format("http://%s:%d%s", this.hostname, this.port, path));
+        this.webDriver.get(String.format("http://%s:%d%s", hostname, port, path));
     }
 
-    @When("User enters (.*) and (.*)")
+    @When("User enters (.*) and (.*) in login form")
     public void whenEnterUsernameAndPassword(String username, String password) {
         this.webDriver.findElement(By.id("username")).sendKeys(username);
         this.webDriver.findElement(By.id(("password"))).sendKeys(password);
         this.webDriver.findElement(By.id(("submit"))).click();
     }
 
-    @When("User receives (.*)")
-    public void thenReceiveMessage(String expectedMessage) {
+    @When("User receives login page response (.*)")
+    public void thenReceiveLoginMessage(String expectedMessage) {
         String actualMessage = this.webDriver.findElement(By.id("message")).getText();
-        //System.out.println(actualMessage);
         Assert.assertEquals(expectedMessage, actualMessage);
         this.server.stop();
         this.webDriver.quit();
