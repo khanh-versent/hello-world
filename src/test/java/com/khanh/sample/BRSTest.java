@@ -51,7 +51,7 @@ public class BRSTest {
     }
 
     @Test
-    public void testCreateNuggetFile()  {
+    public void testCreateNuggetFile() throws IOException {
         FileUtil.deleteDirectory("sim");
         FileUtil.deleteDirectory("brs");
 

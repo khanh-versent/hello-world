@@ -13,6 +13,7 @@ import cucumber.api.java.en.When;
 import org.junit.Assert;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class BNPSteps {
     }
 
     @When("DMP forwards a nugget file of (\\d+) trades")
-    public void whenDMPForwardAnNugget(int tradeAmount) {
+    public void whenDMPForwardAnNugget(int tradeAmount) throws IOException {
         trades = TestUtil.generateTrades(tradeAmount, 1);
         brs.createNuggetFile(trades);
         dmp.executeNugget();

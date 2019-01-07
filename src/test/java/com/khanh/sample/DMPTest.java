@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class DMPTest {
     private String f46CsvPath = "data" + File.separator + "FOLDER5";
 
     @Test
-    public void testProcessNewNuggetFile() {
+    public void testProcessNewNuggetFile() throws IOException {
         FileUtil.deleteDirectory(nuggetPath);
 
         BRS brs = new BRS(f365CsvPath, nuggetPath);
@@ -102,11 +103,13 @@ public class DMPTest {
     }
 
     @Test
-    public void testExecuteF46CSV() {
+    public void testExecuteF46CSV() throws IOException {
         FileUtil.deleteDirectory(nuggetPath);
         FileUtil.deleteDirectory(forwardedNuggetPath);
         FileUtil.deleteDirectory(archivedNuggetPath);
         FileUtil.deleteDirectory(f46CsvPath);
+
+        Date date = new Date();
 
         DMP dmp = new DMP(nuggetPath, forwardedNuggetPath, archivedNuggetPath, f46CsvPath);
         BNP bnp = new BNP(forwardedNuggetPath, f46CsvPath);
@@ -114,6 +117,10 @@ public class DMPTest {
         List<Trade> trades = TestUtil.generateTrades(10, 1);
 
         bnp.createF46CSVFile(trades);
+
+        List<File> files = FileUtil.getNewFiles(f46CsvPath, date.getTime(), "csv");
+        Assert.assertEquals(1, files.size());
+
         dmp.executeF46CSV();
 
         Map<String, List<Trade>> savedTrades = dmp.getCsvData();

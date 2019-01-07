@@ -3,10 +3,7 @@ package com.khanh.sample;
 import com.khanh.sample.models.Trade;
 import com.khanh.sample.models.TradeDetails;
 import com.khanh.sample.models.TradeMetadata;
-import com.khanh.sample.utils.CSVUtil;
-import com.khanh.sample.utils.CompressUtil;
-import com.khanh.sample.utils.FileUtil;
-import com.khanh.sample.utils.XmlUtil;
+import com.khanh.sample.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +29,7 @@ public class BNP {
         this.lastNuggetCheck = new Date();
     }
 
-    public void execute() {
+    public String execute() {
         processNewNuggetFile();
 
         // I assuming that the BRS will combine all CSV data from multiple new files and export into one .tar.gz file
@@ -41,8 +38,11 @@ public class BNP {
             trades.addAll(entry.getValue().getValue().getTrades());
         }
 
-        createF46CSVFile(trades);
-        this.nuggetData.clear();
+        String csvFileName = createF46CSVFile(trades);
+        if(!csvFileName.equals("")) {
+            this.nuggetData.clear();
+        }
+        return csvFileName;
     }
 
     public void processNewNuggetFile() {
@@ -50,40 +50,25 @@ public class BNP {
         this.lastNuggetCheck = new Date();
 
         for (File nuggetFile : files) {
-            try {
-                TradeDetails details = null;
-                TradeMetadata metadata = null;
 
-                List<String> filePaths = CompressUtil.extractTarFile(nuggetFile);
-                for (String extractedFilePath : filePaths) {
-                    if (extractedFilePath.contains("details"))
-                        details = XmlUtil.readFromFile(extractedFilePath, TradeDetails.class);
-                    else if (extractedFilePath.contains("metadata")) {
-                        metadata = XmlUtil.readFromFile(extractedFilePath, TradeMetadata.class);
-                    }
-                }
-
-                if(details != null && metadata != null) {
-                    this.nuggetData.put(nuggetFile.getName(), Map.entry(details, metadata));
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            Map.Entry<TradeDetails, TradeMetadata> nuggetData = NuggetUtil.readNugget(nuggetFile);
+            if(nuggetData != null) {
+                this.nuggetData.put(nuggetFile.getName(), nuggetData);
             }
         }
-
     }
 
-    public void createF46CSVFile(List<Trade> data) {
+    public String createF46CSVFile(List<Trade> data) {
         if(data.size() == 0)
-            return;
+            return "";
 
         String fileName = getCurrentTimeString() + ".csv";
-
         try {
             CSVUtil.writeToFile(this.csvPath + File.separator + fileName, Trade.class, data);
+            return fileName;
         } catch (IOException ex) {
             ex.printStackTrace();
+            return "";
         }
     }
 

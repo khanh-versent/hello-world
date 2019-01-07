@@ -11,6 +11,21 @@ import java.util.*;
 
 public class FileUtil {
 
+    public static List<File> getNewFiles(String directoryPath, long lastCheck, String extension) throws IOException {
+        List<File> newFiles = new ArrayList<>();
+
+        List<File> allFiles = getFiles(directoryPath, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+        for (File file : allFiles) {
+            if (file.lastModified() > lastCheck && file.getName().endsWith(extension)) {
+                newFiles.add(file);
+            } else {
+                break;
+            }
+        }
+
+        return newFiles;
+    }
+
     public static List<File> getNewFiles(String directoryPath, long lastCheck) throws IOException {
         List<File> newFiles = new ArrayList<>();
 
@@ -32,6 +47,11 @@ public class FileUtil {
             throw new IOException("This path is not a directory.");
 
         File[] files = directory.listFiles();
+
+        if(files == null) {
+            throw new IOException("ListFiles returns null.");
+        }
+
         List<File> result = new ArrayList<>();
 
         for(File file : files) {

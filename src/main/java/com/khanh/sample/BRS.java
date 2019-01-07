@@ -39,7 +39,11 @@ public class BRS {
             trades.addAll(entry.getValue());
         }
 
-        createNuggetFile(trades);
+        try {
+            createNuggetFile(trades);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.trades.clear();
     }
 
@@ -57,7 +61,7 @@ public class BRS {
         }
     }
 
-    public String createNuggetFile(List<Trade> trades) {
+    public String createNuggetFile(List<Trade> trades) throws IOException {
         if(trades.size() == 0)
             return "";
 
@@ -87,8 +91,12 @@ public class BRS {
             e.printStackTrace();
         }
 
-        new File(detailsFilePath).delete();
-        new File(metadataFilePath).delete();
+        File detailsFile = new File(detailsFilePath);
+        File metadataFile = new File(metadataFilePath);
+
+        /*if(!detailsFile.delete() && !metadataFile.delete()) {
+            throw new IOException("Can't delete temporary file.");
+        }*/
 
         return fileName;
     }

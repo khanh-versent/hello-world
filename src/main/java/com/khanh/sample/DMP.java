@@ -3,10 +3,7 @@ package com.khanh.sample;
 import com.khanh.sample.models.Trade;
 import com.khanh.sample.models.TradeDetails;
 import com.khanh.sample.models.TradeMetadata;
-import com.khanh.sample.utils.CSVUtil;
-import com.khanh.sample.utils.CompressUtil;
-import com.khanh.sample.utils.FileUtil;
-import com.khanh.sample.utils.XmlUtil;
+import com.khanh.sample.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +42,7 @@ public class DMP {
 
     public void forwardNuggets() {
         try {
-            for(Iterator<Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>>> it = this.nuggetData.entrySet().iterator(); it.hasNext(); ) {
+            for (Iterator<Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>>> it = this.nuggetData.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<String, Map.Entry<TradeDetails, TradeMetadata>> entry = it.next();
 
                 forwardNuggetFile(entry.getKey());
@@ -72,30 +69,14 @@ public class DMP {
     }
 
     public void processNewNuggetFile() {
-        List<File> files = getNewFilesList(this.nuggetPath, this.lastNuggetCheck);
+        List<File> files = getNewFilesList(this.nuggetPath, this.lastNuggetCheck, "tar.gz");
         lastNuggetCheck = new Date();
 
         for (File nuggetFile : files) {
 
-            try {
-                TradeDetails details = null;
-                TradeMetadata metadata = null;
-
-                List<String> filePaths = CompressUtil.extractTarFile(nuggetFile);
-                for (String extractedFilePath : filePaths) {
-                    if (extractedFilePath.contains("details"))
-                        details = XmlUtil.readFromFile(extractedFilePath, TradeDetails.class);
-                    else if (extractedFilePath.contains("metadata")) {
-                        metadata = XmlUtil.readFromFile(extractedFilePath, TradeMetadata.class);
-                    }
-                }
-
-                if(details != null && metadata != null) {
-                    this.nuggetData.put(nuggetFile.getName(), Map.entry(details, metadata));
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            Map.Entry<TradeDetails, TradeMetadata> nuggetData = NuggetUtil.readNugget(nuggetFile);
+            if (nuggetData != null) {
+                this.nuggetData.put(nuggetFile.getName(), nuggetData);
             }
 
         }
@@ -112,10 +93,10 @@ public class DMP {
 
 
     public void processNewF46CSVFile() {
-        List<File> files = getNewFilesList(this.csvPath, this.lastCSVCheck);
+        List<File> files = getNewFilesList(this.csvPath, this.lastCSVCheck, "csv");
         lastCSVCheck = new Date();
 
-        for(File csvFile : files) {
+        for (File csvFile : files) {
             try {
                 List<Trade> trades = CSVUtil.readFromFile(csvFile, Trade.class);
                 csvData.put(csvFile.getName(), trades);
@@ -129,9 +110,9 @@ public class DMP {
         FileUtil.copyFile(new File(this.csvPath + File.separator + source), new File(this.archivedNuggetPath));
     }
 
-    private List<File> getNewFilesList(String path, Date lastCheck) {
+    private List<File> getNewFilesList(String path, Date lastCheck, String extension) {
         try {
-            return FileUtil.getNewFiles(path, lastCheck.getTime());
+            return FileUtil.getNewFiles(path, lastCheck.getTime(), extension);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -146,7 +127,9 @@ public class DMP {
         this.nuggetData = nuggetData;
     }
 
-    public Map<String, List<Trade>> getCsvData() { return csvData; }
+    public Map<String, List<Trade>> getCsvData() {
+        return csvData;
+    }
 
     public void setCsvData(Map<String, List<Trade>> csvData) {
         this.csvData = csvData;
