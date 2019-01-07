@@ -39,7 +39,7 @@ public class BNP {
         }
 
         String csvFileName = createF46CSVFile(trades);
-        if(!csvFileName.equals("")) {
+        if (!csvFileName.equals("")) {
             this.nuggetData.clear();
         }
         return csvFileName;
@@ -50,16 +50,15 @@ public class BNP {
         this.lastNuggetCheck = new Date();
 
         for (File nuggetFile : files) {
-
             Map.Entry<TradeDetails, TradeMetadata> nuggetData = NuggetUtil.readNugget(nuggetFile);
-            if(nuggetData != null) {
+            if (nuggetData != null) {
                 this.nuggetData.put(nuggetFile.getName(), nuggetData);
             }
         }
     }
 
     public String createF46CSVFile(List<Trade> data) {
-        if(data.size() == 0)
+        if (data.size() == 0)
             return "";
 
         String fileName = getCurrentTimeString() + ".csv";

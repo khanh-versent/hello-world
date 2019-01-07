@@ -69,18 +69,15 @@ public class DMP {
     }
 
     public void processNewNuggetFile() {
-        List<File> files = getNewFilesList(this.nuggetPath, this.lastNuggetCheck, "tar.gz");
+        List<File> files = FileUtil.getNewFiles(this.nuggetPath, this.lastNuggetCheck.getTime(), "tar.gz");
         lastNuggetCheck = new Date();
 
         for (File nuggetFile : files) {
-
             Map.Entry<TradeDetails, TradeMetadata> nuggetData = NuggetUtil.readNugget(nuggetFile);
             if (nuggetData != null) {
                 this.nuggetData.put(nuggetFile.getName(), nuggetData);
             }
-
         }
-
     }
 
     private void forwardNuggetFile(String source) throws IOException {
@@ -93,7 +90,7 @@ public class DMP {
 
 
     public void processNewF46CSVFile() {
-        List<File> files = getNewFilesList(this.csvPath, this.lastCSVCheck, "csv");
+        List<File> files = FileUtil.getNewFiles(this.csvPath, this.lastCSVCheck.getTime(), "csv");
         lastCSVCheck = new Date();
 
         for (File csvFile : files) {
@@ -108,15 +105,6 @@ public class DMP {
 
     public void archiveF46CSVFile(String source) throws IOException {
         FileUtil.copyFile(new File(this.csvPath + File.separator + source), new File(this.archivedNuggetPath));
-    }
-
-    private List<File> getNewFilesList(String path, Date lastCheck, String extension) {
-        try {
-            return FileUtil.getNewFiles(path, lastCheck.getTime(), extension);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 
     public Map<String, Map.Entry<TradeDetails, TradeMetadata>> getNuggetData() {

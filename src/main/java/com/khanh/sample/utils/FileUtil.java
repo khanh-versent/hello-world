@@ -11,15 +11,27 @@ import java.util.*;
 
 public class FileUtil {
 
-    public static List<File> getNewFiles(String directoryPath, long lastCheck, String extension) throws IOException {
+    public static List<File> getNewFiles(String directoryPath, long lastCheck, String extension) {
         List<File> newFiles = new ArrayList<>();
+        List<File> allFiles = null;
 
-        List<File> allFiles = getFiles(directoryPath, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-        for (File file : allFiles) {
-            if (file.lastModified() > lastCheck && file.getName().endsWith(extension)) {
-                newFiles.add(file);
-            } else {
-                break;
+        try {
+            allFiles = getFiles(directoryPath, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (allFiles != null && allFiles.size() > 0) {
+            for (File file : allFiles) {
+                // We are getting new files only, so if the lastModified starts being older than
+                // lastCheck, we should break the iteration
+                if (file.lastModified() > lastCheck) {
+                    if (file.getName().endsWith(extension)) {
+                        newFiles.add(file);
+                    }
+                } else {
+                    break;
+                }
             }
         }
 
@@ -48,19 +60,19 @@ public class FileUtil {
 
         File[] files = directory.listFiles();
 
-        if(files == null) {
+        if (files == null) {
             throw new IOException("ListFiles returns null.");
         }
 
         List<File> result = new ArrayList<>();
 
-        for(File file : files) {
-            if(file.isFile()) {
+        for (File file : files) {
+            if (file.isFile()) {
                 result.add(file);
             }
         }
 
-        Collections.sort(result, comparator);
+        result.sort(comparator);
         return result;
     }
 
@@ -80,7 +92,7 @@ public class FileUtil {
 
     public static boolean deleteDirectory(File directory) {
         if (directory.exists()) {
-            if(deleteFilesInDirectory(directory)) {
+            if (deleteFilesInDirectory(directory)) {
                 return directory.delete();
             }
             return false;
@@ -96,12 +108,11 @@ public class FileUtil {
 
             // In order to delete folder, all files in the folder need to be deleted first
             for (File file : files) {
-                if(file.isDirectory()) {
-                    if(deleteDirectory(file)) {
+                if (file.isDirectory()) {
+                    if (deleteDirectory(file)) {
                         count++;
                     }
-                }
-                else {
+                } else {
                     if (file.delete()) {
                         count++;
                     }
@@ -113,10 +124,10 @@ public class FileUtil {
     }
 
     public static boolean copyFile(File sourceFile, File destinationDirectory) throws IOException {
-        if(!destinationDirectory.exists())
+        if (!destinationDirectory.exists())
             destinationDirectory.mkdirs();
 
-        if(destinationDirectory.isDirectory()) {
+        if (destinationDirectory.isDirectory()) {
             String path = destinationDirectory.getPath() + File.separator + sourceFile.getName();
             Files.copy(sourceFile.toPath(), Path.of(path), StandardCopyOption.REPLACE_EXISTING);
         }

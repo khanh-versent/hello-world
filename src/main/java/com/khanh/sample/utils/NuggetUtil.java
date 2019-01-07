@@ -11,10 +11,11 @@ import java.util.Map;
 public class NuggetUtil {
 
     public static Map.Entry<TradeDetails, TradeMetadata> readNugget(File nuggetFile) {
-        try {
-            TradeDetails details = null;
-            TradeMetadata metadata = null;
 
+        TradeDetails details = null;
+        TradeMetadata metadata = null;
+
+        try {
             List<String> filePaths = CompressUtil.extractTarFile(nuggetFile);
             for (String extractedFilePath : filePaths) {
                 if (extractedFilePath.contains("details"))
@@ -27,7 +28,6 @@ public class NuggetUtil {
             if (details != null && metadata != null) {
                 return Map.entry(details, metadata);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

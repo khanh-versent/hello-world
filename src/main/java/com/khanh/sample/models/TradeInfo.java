@@ -29,5 +29,9 @@ public class TradeInfo {
         this.tradeStatus = tradeStatus;
         this.lastUpdate = new Date();
     }
+
+    public Date getLastUpdate() {
+        return this.lastUpdate;
+    }
 }
 

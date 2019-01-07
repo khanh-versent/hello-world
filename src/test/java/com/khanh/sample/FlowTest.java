@@ -36,35 +36,40 @@ public class FlowTest {
         sim.setTrades(trades);
         sim.execute();
         Assert.assertTrue(validator.verifyF365CSVFile());
-
-        List<TradeInfo> tradesInfo = validator.getTradesInfo();
-        Assert.assertEquals(trades.size(), tradesInfo.size());
-        for (Trade trade : trades) {
-            TradeInfo tradeInfo = findTradeInfoById(tradesInfo, trade.getTradeId());
-            Assert.assertNotNull(tradeInfo);
-            Assert.assertEquals(tradeInfo.getTradeStatus(), TradeStatus.F365Created);
-        }
+        assertTradeInfo(validator, trades, TradeStatus.F365Created);
 
         brs.execute();
         Assert.assertTrue(validator.verifyNuggetFile());
-
-        tradesInfo = validator.getTradesInfo();
-        Assert.assertEquals(trades.size(), tradesInfo.size());
-        for (Trade trade : trades) {
-            TradeInfo tradeInfo = findTradeInfoById(tradesInfo, trade.getTradeId());
-            Assert.assertNotNull(tradeInfo);
-            Assert.assertEquals(tradeInfo.getTradeStatus(), TradeStatus.NuggetCreated);
-        }
+        assertTradeInfo(validator, trades, TradeStatus.NuggetCreated);
 
         dmp.executeNugget();
         Assert.assertTrue(validator.verifyForwardedNuggetFile());
-        Assert.assertTrue(validator.verifyArchivedNuggetFile());
+        assertTradeInfo(validator, trades, TradeStatus.NuggetForwarded);
 
-        /*bnp.execute();
-        validator.verifyF46CSVFile(F46_CSV_PATH);
+        Assert.assertTrue(validator.verifyArchivedNuggetFile());
+        assertTradeInfo(validator, trades, TradeStatus.NuggetForwardedAndArchived);
+
+        bnp.execute();
+        Assert.assertTrue(validator.verifyF46CSVFile());
+        assertTradeInfo(validator, trades, TradeStatus.TradeMatching);
 
         dmp.executeF46CSV();
-        validator.verifyF46CSVFile(ARCHIVED_PATH);*/
+        Assert.assertTrue(validator.verifyF46CSVFile());
+        Assert.assertTrue(validator.verifyArchivedF46CSVFile());
+        assertTradeInfo(validator, trades, TradeStatus.F46Archived);
+
+        Assert.assertEquals(0, validator.validateTrades().size());
+    }
+
+    void assertTradeInfo(Validator validator, List<Trade> trades, TradeStatus expectedStatus) {
+        List<TradeInfo> tradesInfo = validator.getTradesInfo();
+        Assert.assertEquals(trades.size(), tradesInfo.size());
+
+        for (Trade trade : trades) {
+            TradeInfo tradeInfo = findTradeInfoById(tradesInfo, trade.getTradeId());
+            Assert.assertNotNull(tradeInfo);
+            Assert.assertEquals(expectedStatus, tradeInfo.getTradeStatus());
+        }
     }
 
     TradeInfo findTradeInfoById(List<TradeInfo> tradesInfo, long id) {
